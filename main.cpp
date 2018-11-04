@@ -2,23 +2,25 @@
 #include <vector>
 #include <fstream>
 #include <string>
+#include "functions.h"
 
 using namespace std;
 
+static int capacity; // Ugly. To change. Do you have an idea how do it felicitous?
+
+// Should we use references?
 vector<vector<int>> write(vector<vector<int>> fleet)
 {
-	int capacity;
 	string line, newword;
 	vector<int> truck;
 	int data;
-
 
 	ifstream file;
 
 	file.open("file1.txt", ios::in);
 	while (!file.eof())
 	{
-		
+
 		file >> line;
 		if (line == "CAPACITY")
 		{
@@ -32,7 +34,7 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 		else if (line == "SERVICE")
 		{
 			file >> newword;
-			
+
 			while (!file.eof())
 			{
 				file >> data;
@@ -53,28 +55,120 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 			}
 
 		}
-		
+
 
 	}
-	
+
 	file.close();
-	for (int j = 0; j < fleet.size(); j++)
+	return fleet;
+}
+
+vector<vector<int>> addVisitedFlag(vector<vector<int>> fleet)
+{
+	for (int j = 1; j < fleet.size(); j++)
 	{
-		for (int i = 0; i < 7; i++)
+        fleet[j].push_back(0);
+        cout << fleet[j][7] << "\n";
+	}
+	return fleet;
+}
+
+void printFleet(vector<vector<int>> fleet)
+{
+    for (int j = 0; j < fleet.size(); j++)
+	{
+		for (int i = 0; i <= fleet[0].size(); i++)
 		{
 			cout << fleet[j][i]<<" ";
 		}
 		cout << endl;
 	}
-
-	return fleet;
 }
+
+void printTrucks(vector<vector<int>> fleet)
+{
+    for (int j = 0; j < fleet.size(); j++)
+	{
+		for (int i = 0; i < fleet[0].size(); i++)
+		{
+			cout << fleet[j][i]<<" ";
+		}
+		cout << endl;
+	}
+}
+
+bool thereAreShopsToVisit(vector<vector<int>> fleet)
+{
+    for (int j = 1; j < fleet.size(); j++)
+        {
+            if(fleet[j][7] == 0)
+            {
+                return true;
+            }
+        }
+    return false;
+}
+
+void addTruck(vector<vector<int>> & trucks, int capacity, int xCoord, int yCoord)
+{   // Add new truck to truckDatabase
+    vector<int> truck;
+    truck.push_back(capacity);
+    truck.push_back(xCoord);
+    truck.push_back(yCoord);
+    trucks.push_back(truck);
+}
+
+int findTheBestFit(vector<int> & truck, vector<vector<int>> & shopsDatabase)
+{
+    int theBestFitIndex;
+    int xTrackCoord = truck[1];
+    int yTrackCoord = truck[2];
+
+    //Heuristic
+    for (int j = 1; j < shopsDatabase.size(); j++)  //To implement.
+        {                                           //To implement.
+            if(shopsDatabase[j].back() == 0)        //To implement.
+            {                                       //To implement.
+                theBestFitIndex = j;                //To implement.
+                return theBestFitIndex;             //To implement.
+            }                                       //To implement.
+        }                                           //To implement.
+}
+
+void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex)
+{
+    truck[0] -= shopsDatabase[theBestFitIndex][3];
+    truck[1] = shopsDatabase[theBestFitIndex][1];
+    truck[2] = shopsDatabase[theBestFitIndex][2];
+    truck.push_back(theBestFitIndex);
+}
+
 int main()
 {
-	vector<vector<int>> first;
+	vector<vector<int>> shopsDatabase;
+	vector<vector<int>> trucks;
 
-	
-	write(first);
+
+	shopsDatabase = write(shopsDatabase);
+	shopsDatabase = addVisitedFlag(shopsDatabase);
+
+	cout << "shopsDatabase:" << endl;
+    printFleet(shopsDatabase);
+
+    addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
+    while(thereAreShopsToVisit(shopsDatabase))
+        {   //While there are no more 0 in last column.
+            // Current track == tracks.back()
+            for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
+            {
+                int theBestFitIndex = findTheBestFit(trucks.back(), shopsDatabase);
+                updateTheTrackDatabase(trucks.back(), shopsDatabase, theBestFitIndex);
+                //Mark shop as served
+                shopsDatabase[theBestFitIndex].back() = 1;
+            }
+        }
+    cout << "Trucks:" << endl;
+    printTrucks(trucks);
 
 	system("pause");
 	return 0;
