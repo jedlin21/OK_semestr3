@@ -6,7 +6,7 @@
 
 using namespace std;
 
-static int capacity; // Ugly. To change. Do you have an idea how do it felicitous?
+static int capacity; // Ugly. To change. Do you have an idea how do it nicely?
 
 // Should we use references?
 vector<vector<int>> write(vector<vector<int>> fleet)
@@ -102,19 +102,19 @@ bool thereAreShopsToVisit(vector<vector<int>> fleet)
     for (int j = 1; j < fleet.size(); j++)
         {
             if(fleet[j][7] == 0)
-            {
                 return true;
-            }
         }
     return false;
 }
 
 void addTruck(vector<vector<int>> & trucks, int capacity, int xCoord, int yCoord)
 {   // Add new truck to truckDatabase
+    //truck = [capacity, xCoord, yCoord, actualTime ... shops visited ...]
     vector<int> truck;
     truck.push_back(capacity);
     truck.push_back(xCoord);
     truck.push_back(yCoord);
+    truck.push_back(0);      //time
     trucks.push_back(truck);
 }
 
@@ -137,9 +137,10 @@ int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsData
 
 void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex)
 {
-    truck[0] -= shopsDatabase[theBestFitIndex][3];
-    truck[1] = shopsDatabase[theBestFitIndex][1];
-    truck[2] = shopsDatabase[theBestFitIndex][2];
+    truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
+    truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
+    truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
+    truck[3] += shopsDatabase[theBestFitIndex][6];  //time
     truck.push_back(theBestFitIndex);
 }
 
