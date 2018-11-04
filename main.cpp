@@ -118,11 +118,11 @@ void addTruck(vector<vector<int>> & trucks, int capacity, int xCoord, int yCoord
     trucks.push_back(truck);
 }
 
-int findTheBestFit(vector<int> & truck, vector<vector<int>> & shopsDatabase)
+int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsDatabase)
 {
     int theBestFitIndex;
-    int xTrackCoord = truck[1];
-    int yTrackCoord = truck[2];
+    int xTrackCoord = trucks.back()[1];
+    int yTrackCoord = trucks.back()[2];
 
     //Heuristic
     for (int j = 1; j < shopsDatabase.size(); j++)  //To implement.
@@ -161,7 +161,7 @@ int main()
             // Current track == tracks.back()
             for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
             {
-                int theBestFitIndex = findTheBestFit(trucks.back(), shopsDatabase);
+                int theBestFitIndex = findTheBestFit(trucks, shopsDatabase);
                 updateTheTrackDatabase(trucks.back(), shopsDatabase, theBestFitIndex);
                 //Mark shop as served
                 shopsDatabase[theBestFitIndex].back() = 1;
