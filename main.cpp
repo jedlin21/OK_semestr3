@@ -135,6 +135,15 @@ int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsData
         }                                           //To implement.
 }
 
+int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
+{
+    int distans[shopsDatabase.size()];
+    // make distance table
+    // delete visited shops
+    // sort distance table
+    // return the best 5 of them
+}
+
 void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex)
 {
     truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
