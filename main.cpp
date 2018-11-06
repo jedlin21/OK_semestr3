@@ -65,7 +65,7 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 
 vector<vector<int>> addVisitedFlag(vector<vector<int>> fleet)
 {
-	for (int j = 1; j < fleet.size(); j++)
+	for (int j = 0; j < fleet.size(); j++)
 	{
         fleet[j].push_back(0);
         cout << fleet[j][7] << "\n";
@@ -135,14 +135,14 @@ int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsData
         }                                           //To implement.
 }
 
-int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
-{
-    int distans[shopsDatabase.size()];
-    // make distance table
-    // delete visited shops
-    // sort distance table
-    // return the best 5 of them
-}
+//int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
+//{
+//    int distans[shopsDatabase.size()];
+//    // make distance table
+//    // delete visited shops
+//    // sort distance table
+//    // return the best 5 of them
+//}
 
 void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex)
 {
