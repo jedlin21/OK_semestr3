@@ -180,6 +180,7 @@ int main()
     cout << "Trucks:" << endl;
     printTrucks(trucks);
 
+
 	system("pause");
 	return 0;
 }
