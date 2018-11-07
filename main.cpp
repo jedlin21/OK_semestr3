@@ -293,7 +293,7 @@ int main()
 	auto stop = high_resolution_clock::now();
 	seconds fiveMinutes(300);
 	vector<vector<int>> shopsDatabase;
-	vector<vector<int>> trucks;
+	vector<vector<int>> trucksDatabase;
 	int left, right;
 	vector<vector<double>> distance;
 
@@ -309,12 +309,12 @@ int main()
     printShops(shopsDatabase);
 	
 	//while (duration_cast<seconds>(stop - start) < fiveMinutes) {
-	addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
+	addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
 
 		//while (thereAreShopsToVisit(shopsDatabase))
 		//{   //While there are no more 0 in last column.
 			// Current track == tracks.back()
-			calculateDistance(trucks.back(), shopsDatabase, distance);
+			calculateDistance(trucksDatabase.back(), shopsDatabase, distance);
 			notVisited(shopsDatabase[shopsDatabase.size() - 1], distance);
 			//for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
 			//{
