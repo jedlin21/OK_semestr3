@@ -3,8 +3,10 @@
 #include <fstream>
 #include <string>
 #include "functions.h"
+#include <chrono>;
 
 using namespace std;
+using namespace std::chrono;
 
 static int capacity; // Ugly. To change. Do you have an idea how do it nicely?
 
@@ -65,10 +67,18 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 
 vector<vector<int>> addVisitedFlag(vector<vector<int>> fleet)
 {
-	for (int j = 1; j < fleet.size(); j++)
+	for (int j = 0; j < fleet.size(); j++)
 	{
-        fleet[j].push_back(0);
-        cout << fleet[j][7] << "\n";
+		fleet[j].push_back(0);
+	}
+	return fleet;
+}
+
+vector<vector<int>> ResetVisitedFlag(vector<vector<int>> fleet)
+{
+	for (int j = 0; j < fleet.size(); j++)
+	{
+		fleet[j].back() = 0;
 	}
 	return fleet;
 }
@@ -135,14 +145,14 @@ int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsData
         }                                           //To implement.
 }
 
-int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
-{
-    int distans[shopsDatabase.size()];
-    // make distance table
-    // delete visited shops
-    // sort distance table
-    // return the best 5 of them
-}
+//int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
+//{
+//    int distans[shopsDatabase.size()];
+//    // make distance table
+//    // delete visited shops
+//    // sort distance table
+//    // return the best 5 of them
+//}
 
 void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex)
 {
@@ -155,6 +165,9 @@ void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsData
 
 int main()
 {
+	auto start = high_resolution_clock::now();
+	auto stop = high_resolution_clock::now();
+	seconds fiveMinutes(300);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<int>> trucks;
 
@@ -163,22 +176,26 @@ int main()
 	shopsDatabase = addVisitedFlag(shopsDatabase);
 
 	cout << "shopsDatabase:" << endl;
-    printFleet(shopsDatabase);
+    //printFleet(shopsDatabase);
+	while (duration_cast<seconds>(stop - start) < fiveMinutes) {
+		addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
 
-    addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
-    while(thereAreShopsToVisit(shopsDatabase))
-        {   //While there are no more 0 in last column.
-            // Current track == tracks.back()
-            for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
-            {
-                int theBestFitIndex = findTheBestFit(trucks, shopsDatabase);
-                updateTheTrackDatabase(trucks.back(), shopsDatabase, theBestFitIndex);
-                //Mark shop as served
-                shopsDatabase[theBestFitIndex].back() = 1;
-            }
-        }
-    cout << "Trucks:" << endl;
-    printTrucks(trucks);
+		while (thereAreShopsToVisit(shopsDatabase))
+		{   //While there are no more 0 in last column.
+			// Current track == tracks.back()
+			for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
+			{
+				int theBestFitIndex = findTheBestFit(trucks, shopsDatabase);
+				updateTheTrackDatabase(trucks.back(), shopsDatabase, theBestFitIndex);
+				//Mark shop as served
+				shopsDatabase[theBestFitIndex].back() = 1;
+			}
+		}
+		cout << "Trucks:" << endl;
+		printTrucks(trucks);
+		ResetVisitedFlag(shopsDatabase);
+		stop = high_resolution_clock::now();
+	}
 
 
 	system("pause");
