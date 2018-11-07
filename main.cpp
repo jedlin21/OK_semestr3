@@ -1,3 +1,4 @@
+
 #include <iostream>
 #include <vector>
 #include <fstream>
@@ -11,7 +12,7 @@ using namespace std::chrono;
 static int capacity; // Ugly. To change. Do you have an idea how do it nicely?
 
 // Should we use references?
-vector<vector<int>> write(vector<vector<int>> shopDatabase) // to improve - fail if data is damaged 
+void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data is damaged 
 {
 	string line, newword; //temporary, only to help read proper data
 	vector<int> shop;
@@ -60,36 +61,37 @@ vector<vector<int>> write(vector<vector<int>> shopDatabase) // to improve - fail
 
 
 	}
+	
 
 	file.close();
-	return shopDatabase;
+	
 }
 
-vector<vector<int>> addVisitedFlag(vector<vector<int>> shopDatabase)
+void addFlag(vector<vector<int>> & shopDatabase)
 {
 	for (int j = 0; j < shopDatabase.size(); j++)
 	{
 		shopDatabase[j].push_back(0);
 	}
-	return shopDatabase;
+	
 }
 
-vector<vector<int>> ResetVisitedFlag(vector<vector<int>> fleet)
+vector<vector<int>> ResetVisitedFlag(vector<vector<int>> dataBase)
 {
-	for (int j = 0; j < fleet.size(); j++)
+	for (int j = 0; j < dataBase.size(); j++)
 	{
-		fleet[j].back() = 0;
+		dataBase[j].back() = 0;
 	}
-	return fleet;
+	return dataBase;
 }
 
-void printFleet(vector<vector<int>> fleet)
+void printShops(vector<vector<int>> dataBase)
 {
-    for (int j = 0; j < fleet.size(); j++)
+    for (int j = 0; j < dataBase.size(); j++)
 	{
-		for (int i = 0; i <= fleet[0].size(); i++)
+		for (int i = 0; i < dataBase[0].size(); i++)
 		{
-			cout << fleet[j][i]<<" ";
+			cout << dataBase[j][i]<<" ";
 		}
 		cout << endl;
 	}
@@ -147,6 +149,48 @@ int findTheBestFit(vector<vector<int>> & trucks, vector<vector<int>> & shopsData
 
 //int[] keySort(vector<int> & truck, vector<vector<int>> & shopsDatabase)
 //{
+//void change(int *a, int *b) {
+//	int tmp = *a;
+//	*a = *b;
+//	*b = tmp;
+//}
+//
+//void QuickSort(int *tab, int i, int j)
+//{
+//	int left = i;
+//	int right = j;
+//	int index = (i + j) / 2;
+//	int pivot = tab[index];
+//	while (i <= j)
+//	{
+//		while (tab[i] < pivot)
+//			i++;
+//		while (tab[j] > pivot)
+//			j--;
+//
+//		if (i <= j)
+//		{
+//			change(&tab[i], &tab[j]);
+//			i++;
+//			j--;
+//		}
+//	}
+//	if (left < j) QuickSort(tab, left, j);
+//
+//	if (right > i) QuickSort(tab, i, right);
+//}
+//
+//int main() {
+//	int amount, range;
+//	int *tab;
+//
+//	
+//	int left = 0;
+//	int right = amount - 1;
+//	
+//	QuickSort(tab, left, right);
+//	
+//}
 //    int distans[shopsDatabase.size()];
 //    // make distance table
 //    // delete visited shops
@@ -170,15 +214,19 @@ int main()
 	seconds fiveMinutes(300);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<int>> trucks;
+	int left, right;
 
 
-	shopsDatabase = write(shopsDatabase);
-	shopsDatabase = addVisitedFlag(shopsDatabase);
+	writeData(shopsDatabase);
+	addFlag(shopsDatabase);
+	left = 0;
+	right = shopsDatabase.size() - 1;
 
 	cout << "shopsDatabase:" << endl;
-    //printFleet(shopsDatabase);
+    printShops(shopsDatabase);
+	addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
 	while (duration_cast<seconds>(stop - start) < fiveMinutes) {
-		addTruck(trucks, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
+		
 
 		while (thereAreShopsToVisit(shopsDatabase))
 		{   //While there are no more 0 in last column.
@@ -191,8 +239,8 @@ int main()
 				shopsDatabase[theBestFitIndex].back() = 1;
 			}
 		}
-		cout << "Trucks:" << endl;
-		printTrucks(trucks);
+		//cout << "Trucks:" << endl;
+		//printTrucks(trucks);
 		ResetVisitedFlag(shopsDatabase);
 		stop = high_resolution_clock::now();
 	}
