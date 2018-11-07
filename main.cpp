@@ -11,10 +11,10 @@ using namespace std::chrono;
 static int capacity; // Ugly. To change. Do you have an idea how do it nicely?
 
 // Should we use references?
-vector<vector<int>> write(vector<vector<int>> fleet)
+vector<vector<int>> write(vector<vector<int>> shopDatabase) // to improve - fail if data is damaged 
 {
-	string line, newword;
-	vector<int> truck;
+	string line, newword; //temporary, only to help read proper data
+	vector<int> shop;
 	int data;
 
 	ifstream file;
@@ -42,17 +42,17 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 				file >> data;
 				if (!file.eof())
 				{
-					truck.push_back(data);
+					shop.push_back(data);
 
 
 					for (int i = 0; i < 6; i++)
 					{
 						file >> data;
-						truck.push_back(data);
+						shop.push_back(data);
 
 					}
-					fleet.push_back(truck);
-					truck.clear();
+					shopDatabase.push_back(shop);
+					shop.clear();
 				}
 			}
 
@@ -62,16 +62,16 @@ vector<vector<int>> write(vector<vector<int>> fleet)
 	}
 
 	file.close();
-	return fleet;
+	return shopDatabase;
 }
 
-vector<vector<int>> addVisitedFlag(vector<vector<int>> fleet)
+vector<vector<int>> addVisitedFlag(vector<vector<int>> shopDatabase)
 {
-	for (int j = 0; j < fleet.size(); j++)
+	for (int j = 0; j < shopDatabase.size(); j++)
 	{
-		fleet[j].push_back(0);
+		shopDatabase[j].push_back(0);
 	}
-	return fleet;
+	return shopDatabase;
 }
 
 vector<vector<int>> ResetVisitedFlag(vector<vector<int>> fleet)
@@ -107,11 +107,11 @@ void printTrucks(vector<vector<int>> fleet)
 	}
 }
 
-bool thereAreShopsToVisit(vector<vector<int>> fleet)
+bool thereAreShopsToVisit(vector<vector<int>> shopDatabase)
 {
-    for (int j = 1; j < fleet.size(); j++)
+    for (int j = 1; j < shopDatabase.size(); j++)
         {
-            if(fleet[j][7] == 0)
+            if(shopDatabase[j][7] == 0)
                 return true;
         }
     return false;
