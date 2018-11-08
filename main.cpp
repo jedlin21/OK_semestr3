@@ -228,7 +228,7 @@ void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsData
     truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
     truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
     truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
-    truck[3] += shopsDatabase[theBestFitIndex][6];  //time
+    truck[3] += shopsDatabase[theBestFitIndex][6];  //time 
     truck.push_back(theBestFitIndex);
 }
 
