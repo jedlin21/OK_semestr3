@@ -292,6 +292,9 @@ int main()
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
 			calculateDistance(trucksDatabase.back(), shopsDatabase, distance);
+			left = 0;
+			right = distance.size() - 1;
+			QuickSort(distance, left, right);
 			for (int j = 1; j < shopsDatabase.size(); j++) // condition to change
 			{
 				theBestFitIndex = findTheBestFit(trucksDatabase, shopsDatabase);
@@ -303,9 +306,7 @@ int main()
 		selectBetterResult(bestResult, trucksDatabase);
 		cout << "Trucks:" << endl;
 		printTrucks(trucksDatabase);
-			left = 0;
-			right = distance.size() - 1;
-			QuickSort(distance, left, right);
+			
 			// random dla 5 wynikow, dodac do trucka - pamietac o serwis time
 		ResetVisitedFlag(shopsDatabase);
 		trucksDatabase.clear();
