@@ -10,7 +10,8 @@
 using namespace std;
 using namespace std::chrono;
 
-static int capacity; // Ugly. To change. Do you have an idea how do it nicely?
+static int capacity; 
+static const int precision = 1000000;// Ugly. To change. Do you have an idea how do it nicely?
 
 
 void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data is damaged 
@@ -53,6 +54,9 @@ void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data 
 						shop.push_back(data);
 
 					}
+					shop[4] *= precision;
+					shop[5] *= precision;
+					shop[6] *= precision;
 					shopDatabase.push_back(shop);
 					shop.clear();
 				}
@@ -210,13 +214,14 @@ void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsData
 bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance)
 {
 	vector<int> truck = trucks.back();
-	bool thereAreshopsToVisit = false;
+	bool thereAreshopsToVisitbool = false;
 	bool enoughCapacity = false;
 	int truckX = truck[1];
 	int truckY = truck[2];
 	int dataX;
 	int dataY;
-	double dis;
+	double distanceDouble;
+	int distanceInt;
 
 
 
@@ -224,18 +229,20 @@ bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopD
 	{
 		if (shopDatabase[i].back() == 0 )// shop must be not visited 
 		{
-			thereAreshopsToVisit = true;
+			thereAreshopsToVisitbool = true;
 			if (truck[0] >= shopDatabase[i][3]) // truck has enough capacity
 			{
 				enoughCapacity = true;
 				vector<double> record;
 				dataX = shopDatabase[i][1];
 				dataY = shopDatabase[i][2];
-				dis = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
-				if ((double)shopDatabase[i][4] <= dis + (double)truck[3] < (double)shopDatabase[i][5]) //open window <=dis+ current truck time < close window
+				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
+				distanceDouble = distanceDouble * precision;
+				distanceInt = int(distanceDouble);
+				if (shopDatabase[i][4] <= distanceInt + truck[3] < shopDatabase[i][5]) //open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
-					record.push_back(dis);
+					record.push_back(distanceInt);
 					distance.push_back(record);
 				}
 				
@@ -250,6 +257,7 @@ bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopD
 	{
 		addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2]);
 	}
+	cout << "bool"<<thereAreshopsToVisitbool << endl;
 	return thereAreShopsToVisit;
 	printDistance(distance);
 
@@ -282,7 +290,7 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(10);
+	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<int>> trucksDatabase;
 	int left, right;
@@ -302,11 +310,13 @@ int main()
 
 	while (duration_cast<seconds>(stop - start) < fiveMinutes) {
 		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
+		cout << "human centipide" << endl;
 
-		while (calculateDistance(trucksDatabase.back(), shopsDatabase, distance))
+
+		while (true)
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
-			
+			if (calculateDistance(trucksDatabase, shopsDatabase, distance)) break;
 			left = 0;
 			right = distance.size() - 1;
 			QuickSort(distance, left, right);
