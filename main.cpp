@@ -205,7 +205,7 @@ void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsData
 {
 	
 	truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
-	truck[3] += shopsDatabase[theBestFitIndex][6];  //time: add distance and service time
+	truck[3] += shopsDatabase[theBestFitIndex][6] + ;  //time: add distance and service time
 	truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
 	truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
 	truck.push_back(theBestFitIndex);
@@ -312,15 +312,13 @@ int main()
 		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2]);
 		cout << "human centipide" << endl;
 
-
-		while (true)
+		while (calculateDistance(trucksDatabase, shopsDatabase, distance))
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
-			if (calculateDistance(trucksDatabase, shopsDatabase, distance)) break;
 			left = 0;
 			right = distance.size() - 1;
 			QuickSort(distance, left, right);
-			theBestFitIndex = findTheBestFit(trucksDatabase, shopsDatabase);
+			theBestFitIndex = (int)distance[0][0];
 			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex);
 			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
