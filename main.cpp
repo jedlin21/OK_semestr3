@@ -403,7 +403,7 @@ int main()
 
 			}
 			
-			shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1;
+			
 			//Mark shop as served
 			
 			distance.clear();
