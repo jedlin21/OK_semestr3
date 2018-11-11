@@ -366,7 +366,7 @@ int main()
 	
 
 	while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes) ) {
-		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][5]);
+		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][5],  shopsDatabase[0][6]);
 		cout << "human centipide" << endl;
 		int indexWaiting = -1;
 		double timewaiting = -1;
