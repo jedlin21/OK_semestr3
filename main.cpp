@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include "functions.h"
-#include <chrono>;
+#include <chrono>
 #include <math.h>
 #include <time.h> 
 
@@ -79,7 +79,7 @@ void printShops(vector<vector<int>> dataBase)
 
 void addFlag(vector<vector<int>> & shopDatabase)
 {
-	for (int j = 0; j < shopDatabase.size(); j++)
+	for (unsigned int j = 0; j < shopDatabase.size(); j++)
 	{
 		shopDatabase[j].push_back(0);
 	}
@@ -184,12 +184,11 @@ bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & sh
 	vector<double> truck = trucks.back();
 	bool thereAreshopsToVisitbool = false;
 	bool enoughCapacity = false;
-	int truckX = truck[1];
-	int truckY = truck[2];
+	int truckX = (int)truck[1];
+	int truckY = (int)truck[2];
 	int dataX;
 	int dataY;
 	double distanceDouble;
-	int distanceInt;
 	double waiting = -1;
 	
 	
@@ -267,8 +266,8 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 	}
 	else if (mode == "sumTime")
 	{
-		double previouslyShortestTime = calculateSumaServiceTime(bestResult);
-		double actualServiceTime = calculateSumaServiceTime(trucksDatabase);
+		double previouslyShortestTime = calculateSumServiceTime(bestResult);
+		double actualServiceTime = calculateSumServiceTime(trucksDatabase);
 		if (actualServiceTime < previouslyShortestTime)
 			bestResult = trucksDatabase;
 	}
@@ -276,7 +275,7 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 		throw new exception("Wrong mode exception");
 }
 
-double calculateSumaServiceTime(vector<vector<double>> trucksDatabase)
+double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 {
 	double serviceTime = 0;
 	for (int i = 0; trucksDatabase.size(); i++)
@@ -296,7 +295,7 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 {
 	ofstream file;
 	file.open(fileName);
-	file << "liczbatras " << calculateSumaServiceTime(bestResult) << endl;
+	file << "liczbatras " << calculateSumServiceTime(bestResult) << endl;
 	for (int i = 0; i < bestResult.size(); i++)
 	{
 		for (int j = 0; j < bestResult[i].size(); j++) {
