@@ -281,7 +281,6 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 {
 	double serviceTime = 0;
-	cout<< endl<< "size" << trucksDatabase.size();
 	for (int i = 0; i < trucksDatabase.size(); i++)
 		serviceTime += trucksDatabase[i][3];
 	return serviceTime;
@@ -322,108 +321,89 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 
 int main()
 {
-	
-	seconds fiveMinutes(1);
+	auto start = high_resolution_clock::now();
+	auto stop = high_resolution_clock::now();
+	seconds fiveMinutes(300);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
-	int theBestFitIndex;
+	int theBestFitIndex = 0;
 	vector<vector<double>> bestResult;
-	vector<vector<int>> mainShopsDatabase;
 
-	writeData(mainShopsDatabase);
-	addFlag(mainShopsDatabase);
-	vector<vector<double>> resultVector;
-	vector<double> resultVectorBufor;
-	for (int instances = 8; instances < mainShopsDatabase.size(); instances += 8)
+	writeData(shopsDatabase);
+	addFlag(shopsDatabase);
+
+	int firstCheck = 1;
+	double distanceDouble;
+	double wait;
+	for (int i = 1; i < shopsDatabase.size(); i++)
 	{
-		instances = 995;
-		auto start = high_resolution_clock::now();
-		auto stop = high_resolution_clock::now();
-		shopsDatabase = mainShopsDatabase;
-		shopsDatabase.resize(instances);
-		cout << shopsDatabase.size() << endl;
-		int firstCheck = 1;
-		double distanceDouble;
-		double wait;
-		for (int i = 1; i < shopsDatabase.size(); i++)
+		wait = 0;
+		if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
 		{
-			wait = 0;
-			if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
-			{
-				firstCheck = 0;
-				break;
-			}
-			distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
-
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
-			{
-				wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
-			}
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
-			{
-				firstCheck = 0;
-				break;
-			}
+			firstCheck = 0;
+			break;
 		}
+		distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
 
-
-		while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
-			addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4], shopsDatabase[0][6]);
-
-			int indexWaiting = -1;
-			double timewaiting = -1;
-
-			while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
-			{   //While there are no more 0 in last column.
-				 //Current track == trucksDatabase.back()
-				if (distance.size() > 5)
-				{
-					QuickSort(distance, 0, distance.size() - 1);
-					theBestFitIndex = drawNextClient(distance, 5);
-					updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
-					shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
-				}
-				else if (0 < distance.size() && distance.size() <= 5)
-				{
-					theBestFitIndex = drawNextClient(distance, distance.size());
-					updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
-					shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
-				}
-				else if (distance.size() == 0 && indexWaiting != -1 && timewaiting != -1)
-				{
-					theBestFitIndex = indexWaiting;
-					updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
-					shopsDatabase[theBestFitIndex].back() = 1; //Mark shop as served
-				}
-
-				distance.clear();
-				indexWaiting = -1;
-				timewaiting = -1;
-			}
-
-			trucksDatabase.back()[3] += calculateDistance(trucksDatabase.back(), shopsDatabase[0]); //update last truck
-			selectBetterResult(bestResult, trucksDatabase);
-			//Clear before next iteration
-			ResetVisitedFlag(shopsDatabase);
-			trucksDatabase.clear();
-			distance.clear();
-
-			//
-			stop = high_resolution_clock::now();
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
+		{
+			wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
 		}
-		resultVectorBufor.clear();
-		resultVectorBufor.push_back(instances);
-		resultVectorBufor.push_back(bestResult.size());
-		cout << "I am here" << endl;
-		resultVectorBufor.push_back(calculateSumServiceTime(bestResult));
-		resultVector.push_back(resultVectorBufor);
-
-		bestResult.clear();
-		//printTrucks(bestResult);
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait>= shopsDatabase[0][5])
+		{
+			firstCheck = 0;
+			break;
+		}
 	}
-	saveToFile(resultVector, "file.txt");
-	//printTrucks(bestResult);
+	
+
+	while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes) ) {
+		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4],  shopsDatabase[0][6]);
+		
+		int indexWaiting = -1;
+		double timewaiting = -1;
+
+		while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
+		{   //While there are no more 0 in last column.
+			 //Current track == trucksDatabase.back()
+			if (distance.size() > 5)
+			{
+				QuickSort(distance, 0, distance.size() - 1);
+				theBestFitIndex = drawNextClient(distance, 5);
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
+			}
+			else if (0 < distance.size() && distance.size() <= 5)
+			{
+				theBestFitIndex = drawNextClient(distance, distance.size());
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
+			}
+			else if (distance.size() == 0 && indexWaiting != -1 && timewaiting != -1)
+			{
+				theBestFitIndex = indexWaiting;
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
+				shopsDatabase[theBestFitIndex].back() = 1; //Mark shop as served
+			}
+			
+			distance.clear();
+			indexWaiting = -1;
+			timewaiting = -1;
+		}
+		
+		trucksDatabase.back()[3] += calculateDistance(trucksDatabase.back(), shopsDatabase[0]); //update last truck
+		selectBetterResult(bestResult, trucksDatabase);
+		//Clear before next iteration
+		ResetVisitedFlag(shopsDatabase);
+		trucksDatabase.clear();
+		distance.clear();
+	
+		//
+		stop = high_resolution_clock::now();
+	}
+	saveToFile(bestResult, "file.txt");
+	printTrucks(bestResult);
 	system("pause");
 	return 0;
 }
