@@ -4,7 +4,7 @@
 #include <fstream>
 #include <string>
 #include "functions.h"
-#include <chrono>;
+#include <chrono>
 #include <math.h>
 #include <time.h> 
 
@@ -343,6 +343,10 @@ int main()
 			{
 				theBestFitIndex = drawNextClient(distance);
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, distance[theBestFitIndex][1]);
+			}
+			else if (indexWaiting != -1 && timewaiting != -1)
+			{
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, indexWaiting, timewaiting);
 			}
 			
 			
