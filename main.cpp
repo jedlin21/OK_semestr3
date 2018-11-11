@@ -228,7 +228,7 @@ bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & sh
 	}
 	printDistance(distance);
 	if (thereAreshopsToVisitbool) {
-		if (!enoughCapacity || (indexWaiting == -1 && distanceWaiting == -1 ))
+		if (!enoughCapacity || (indexWaiting == -1 && distanceWaiting == -1  && distance.size()==0))
 		{
 			cout << "Track Added" << endl;
 			addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2], shopDatabase[0][4]);
