@@ -232,23 +232,34 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 	{
 		bestResult = trucksDatabase;
 	}
-	//else if (mode == "distance")
-	//{
-	//	int maxTime = 0;
-	//	for (int i = 0; i < trucksDatabase.size(); i++) {
-	//		if (maxTime > trucksDatabase[i][3])
-	//			maxTime = trucksDatabase[i][3];
-	//	}
-	//	if (maxTime < bestResult.back()[0]) {
-	//		bestResult = trucksDatabase;
-	//		bestResult.push_back((vector<int>)trucksDatabase.size());
-	//		vector<int> maxT;
-	//		maxT.push_back(maxTime);
-	//		bestResult.push_back(maxT);
-	//	}
-	//}
+	else if (mode == "theShortestTimeFromStartToEnd")
+	{
+		int maxTime = 0;
+		for (int i = 0; i < trucksDatabase.size(); i++) {
+			if (maxTime > trucksDatabase[i][3])
+				maxTime = trucksDatabase[i][3];
+		}
+		if (maxTime < bestResult.back()[0]) {
+			bestResult = trucksDatabase;
+			bestResult.push_back((vector<double>)trucksDatabase.size());
+			vector<double> maxT;
+			maxT.push_back(maxTime);
+			bestResult.push_back(maxT);
+		}
+	}
 	else if (mode == "number") {
 		if (trucksDatabase.size() < bestResult.size())
+			bestResult = trucksDatabase;
+	}
+	else if (mode == "sumTime")
+	{
+		double previouslyShortestTime = 0;
+		for (int i = 0; i < bestResult.size(); i++)
+			previouslyShortestTime += bestResult[i][3];
+		double actualServiceTime = 0;
+		for (int i = 0; trucksDatabase.size(); i++)
+			actualServiceTime += trucksDatabase[i][3];
+		if (actualServiceTime < previouslyShortestTime)
 			bestResult = trucksDatabase;
 	}
 	else
