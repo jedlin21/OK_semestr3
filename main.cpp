@@ -287,6 +287,7 @@ int drawNextClient(vector<vector<double>> distance)
 {
 	srand(time(NULL));
 	int rangeDistance = distance.size();
+
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
@@ -366,6 +367,7 @@ int main()
 		ResetVisitedFlag(shopsDatabase);
 		trucksDatabase.clear();
 		distance.clear();
+	
 		//
 		stop = high_resolution_clock::now();
 	}
