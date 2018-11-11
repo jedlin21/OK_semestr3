@@ -342,16 +342,22 @@ int main()
 			{
 				theBestFitIndex = drawNextClient(distance);
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, distance[theBestFitIndex][1]);
+				
 			}
 			else if (indexWaiting != -1 && timewaiting != -1)
 			{
-				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, indexWaiting, timewaiting);
+				theBestFitIndex = indexWaiting;
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
+
 			}
 			
-			
-			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
+			//Mark shop as served
+			
 			distance.clear();
+			indexWaiting = -1;
+			timewaiting = -1;
+
 		}
 		selectBetterResult(bestResult, trucksDatabase);
 		cout << "Trucks:" << endl;
