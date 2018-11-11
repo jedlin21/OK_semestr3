@@ -132,14 +132,14 @@ bool thereAreShopsToVisit(vector<vector<int>> shopDatabase)
 	return false;
 }
 
-void addTruck(vector<vector<double>> & trucks, int capacity, int xCoord, int yCoord, int openTime)
+void addTruck(vector<vector<double>> & trucks, int capacity, int xCoord, int yCoord, int openTime, int warehouseService)
 {   // Add new truck to truckDatabase
 	//truck = [capacity, xCoord, yCoord, actualTime ... shops visited ...]
 	vector<double> truck;
 	truck.push_back(capacity);
 	truck.push_back(xCoord);
 	truck.push_back(yCoord);
-	truck.push_back(openTime);      //time
+	truck.push_back(openTime + warehouseService);      //time
 	trucks.push_back(truck);
 }
 
@@ -179,7 +179,7 @@ void updateTheTrackDatabase(vector<double> & truck, vector<vector<int>> & shopsD
 	truck.push_back(theBestFitIndex);
 }
 
-bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance, int & indexWaiting, double & distanceWaiting)
+bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance, int & indexWaiting, double & distanceWaiting)
 {
 	vector<double> truck = trucks.back();
 	bool thereAreshopsToVisitbool = false;
@@ -231,12 +231,23 @@ bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & sh
 		if (!enoughCapacity || (indexWaiting == -1 && distanceWaiting == -1  && distance.size()==0))
 		{
 			cout << "Track Added" << endl;
-			addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2], shopDatabase[0][4]);
+			
+			truck[3] += calculateDistance(truck, shopDatabase[0]);
+			addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2], shopDatabase[0][4], shopDatabase[0][6]);
 		}
 		return true;
 	}
 	else
 		return false;
+}
+
+double calculateDistance(vector<double> first, vector<int> second)
+{
+	double firstX = first[1];
+	double firstY = first[2];
+	int secondX = second[1];
+	int secondY = second[2];
+	return sqrt(pow((secondX - firstX), 2) + pow((secondY - firstY), 2));
 }
 
 void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode="number") {
@@ -278,7 +289,8 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 {
 	double serviceTime = 0;
-	for (int i = 0; trucksDatabase.size(); i++)
+	cout << trucksDatabase.size() << endl;
+	for (int i = 0; i < trucksDatabase.size(); i++)
 		serviceTime += trucksDatabase[i][3];
 	return serviceTime;
 }
@@ -296,7 +308,11 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 {
 	ofstream file;
 	file.open(fileName);
-	file << "liczbatras " << calculateSumServiceTime(bestResult) << endl;
+	if (bestResult.size() == 0)
+		file << "liczbatras " << "-1" << endl;
+	else
+		file << "liczbatras " << calculateSumServiceTime(bestResult) << endl;
+
 	for (int i = 0; i < bestResult.size(); i++)
 	{
 		for (int j = 0; j < bestResult[i].size(); j++) {
@@ -355,7 +371,7 @@ int main()
 		int indexWaiting = -1;
 		double timewaiting = -1;
 
-		while (calculateDistance(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
+		while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
 			printShops(shopsDatabase);
@@ -383,8 +399,8 @@ int main()
 			distance.clear();
 			indexWaiting = -1;
 			timewaiting = -1;
-
 		}
+
 		selectBetterResult(bestResult, trucksDatabase);
 		cout << "Trucks:" << endl;
 		printTrucks(trucksDatabase);
