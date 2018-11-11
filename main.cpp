@@ -6,6 +6,7 @@
 #include "functions.h"
 #include <chrono>;
 #include <math.h>
+#include <time.h> 
 
 using namespace std;
 using namespace std::chrono;
@@ -280,6 +281,14 @@ void selectBetterResult(vector<vector<int>> & bestResult, vector<vector<int>> tr
 		throw new exception("Wrong mode exception");
 }
 
+int drawNextClient(vector<vector<double>> distance)
+{
+	srand(time(NULL));
+	int rangeDistance = distance.size();
+	int chosen = rand() % rangeDistance;
+	return chosen;
+}
+
 
 int main()
 {
@@ -307,9 +316,13 @@ int main()
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
 			printShops(shopsDatabase);
-			QuickSort(distance, 0, distance.size() - 1);
-			// random dla 5 wynikow, dodac do trucka - pamietac o serwis time
-			theBestFitIndex = (int)distance[0][0];
+			if (distance.size() > 5)
+			{
+				QuickSort(distance, 0, distance.size() - 1);
+			}
+
+			theBestFitIndex = drawNextClient(distance);
+			
 			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex);
 			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
