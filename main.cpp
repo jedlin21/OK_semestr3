@@ -173,7 +173,7 @@ void QuickSort(vector<vector<double>> & distance, int i, int j)
 void updateTheTrackDatabase(vector<double> & truck, vector<vector<int>> & shopsDatabase, int theBestFitIndex, double distance)
 {
 	truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
-	truck[3] += shopsDatabase[theBestFitIndex][6] + distance;  //time: add distance and service time
+	truck[3] = truck[3] + shopsDatabase[theBestFitIndex][6] + distance;  //time: add distance and service time
 	truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
 	truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
 	truck.push_back(theBestFitIndex);
@@ -206,7 +206,7 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 				dataY = shopDatabase[i][2];
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
 				
-				if (shopDatabase[i][4] <= distanceDouble + truck[3] < shopDatabase[i][5]) //open window <=dis+ current truck time < close window
+				if ((shopDatabase[i][4] <= distanceDouble + truck[3] )&& (distanceDouble + truck[3] < shopDatabase[i][5])) //open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
 					record.push_back(distanceDouble);
@@ -300,7 +300,7 @@ double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 int drawNextClient(vector<vector<double>> distance, int rangeDistance)
 {
 	srand(time(NULL));
-	cout << "dis" << rangeDistance << endl;
+	//cout << "dis " << rangeDistance << endl;
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
@@ -390,16 +390,16 @@ int main()
 			}
 			else if (0 < distance.size() && distance.size() <= 5)
 			{
-				cout << "dis1" << distance.size() << endl;
+				cout << "dis1 " << distance.size() << endl;
 				theBestFitIndex = drawNextClient(distance, distance.size());
 				cout << theBestFitIndex << endl;
 				cout << "distance " << distance[theBestFitIndex][1] << endl;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
 				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
 			}
-			else if (indexWaiting != -1 && timewaiting != -1)
+			else if (distance.size() == 0 && indexWaiting != -1 && timewaiting != -1)
 			{
-				cout << "dis2" << distance.size() << endl;
+				cout << "dis2 " << distance.size() << endl;
 				theBestFitIndex = indexWaiting;
 				cout << "timewaiting" << timewaiting << endl;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
