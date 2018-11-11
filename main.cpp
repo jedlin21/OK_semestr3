@@ -253,17 +253,21 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 	}
 	else if (mode == "sumTime")
 	{
-		double previouslyShortestTime = 0;
-		for (int i = 0; i < bestResult.size(); i++)
-			previouslyShortestTime += bestResult[i][3];
-		double actualServiceTime = 0;
-		for (int i = 0; trucksDatabase.size(); i++)
-			actualServiceTime += trucksDatabase[i][3];
+		double previouslyShortestTime = calculateSumaServiceTime(bestResult);
+		double actualServiceTime = calculateSumaServiceTime(trucksDatabase);
 		if (actualServiceTime < previouslyShortestTime)
 			bestResult = trucksDatabase;
 	}
 	else
 		throw new exception("Wrong mode exception");
+}
+
+double calculateSumaServiceTime(vector<vector<double>> trucksDatabase)
+{
+	double serviceTime = 0;
+	for (int i = 0; trucksDatabase.size(); i++)
+		serviceTime += trucksDatabase[i][3];
+	return serviceTime;
 }
 
 int drawNextClient(vector<vector<double>> distance)
@@ -272,6 +276,21 @@ int drawNextClient(vector<vector<double>> distance)
 	int rangeDistance = distance.size();
 	int chosen = rand() % rangeDistance;
 	return chosen;
+}
+
+void saveToFile(vector<vector<double>> bestResult, string fileName)
+{
+	ofstream file;
+	file.open(fileName);
+	file << "liczbatras " << calculateSumaServiceTime(bestResult) << endl;
+	for (int i = 0; i < bestResult.size(); i++)
+	{
+		for (int j = 0; j < bestResult[i].size(); j++) {
+			file << bestResult[i][j] << " ";
+		}
+		file << endl;
+	}
+	file.close();
 }
 
 
@@ -322,6 +341,7 @@ int main()
 		//
 		stop = high_resolution_clock::now();
 	}
+	saveToFile(bestResult, "file.txt");
 	cout << "Best result" << endl;
 	printTrucks(bestResult);
 	system("pause");
