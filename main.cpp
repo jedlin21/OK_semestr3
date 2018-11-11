@@ -306,7 +306,7 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 
 	for (int i = 0; i < bestResult.size(); i++)
 	{
-		for (int j = 0; j < bestResult[i].size(); j++) {
+		for (int j = 4; j < bestResult[i].size(); j++) {
 			file << bestResult[i][j] << " ";
 		}
 		file << endl;
