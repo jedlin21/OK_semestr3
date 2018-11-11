@@ -300,9 +300,9 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	ofstream file;
 	file.open(fileName);
 	if (bestResult.size() == 0)
-		file << "liczbatras " << "-1" << "\n";
+		file << "-1" << "\n";
 	else
-		file << "liczbatras " << calculateSumServiceTime(bestResult) << "\n";
+		file << bestResult.size()<< " " << calculateSumServiceTime(bestResult) << "\n";
 
 	for (int i = 0; i < bestResult.size(); i++)
 	{
