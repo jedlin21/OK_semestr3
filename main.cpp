@@ -307,7 +307,7 @@ int main()
 
 			theBestFitIndex = drawNextClient(distance);
 			
-			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex);
+			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, distance[theBestFitIndex][1]);
 			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
 			distance.clear();
