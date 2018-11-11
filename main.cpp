@@ -383,6 +383,7 @@ int main()
 				cout << theBestFitIndex << endl;
 				cout << (int)distance[theBestFitIndex][0] << endl;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1;
 			}
 			else if (0 < distance.size() && distance.size() <= 5)
 			{
@@ -391,12 +392,14 @@ int main()
 				cout << theBestFitIndex << endl;
 				cout << (int)distance[theBestFitIndex][0] << endl;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1;
 			}
 			else if (indexWaiting != -1 && timewaiting != -1)
 			{
 				cout << "dis2" << distance.size() << endl;
 				theBestFitIndex = indexWaiting;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
+				shopsDatabase[theBestFitIndex].back() = 1;
 
 			}
 			
