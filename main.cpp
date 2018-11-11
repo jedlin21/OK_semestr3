@@ -179,7 +179,7 @@ void updateTheTrackDatabase(vector<double> & truck, vector<vector<int>> & shopsD
 	truck.push_back(theBestFitIndex);
 }
 
-bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance)
+bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance, int & indexWaiting, double & distanceWaiting)
 {
 	vector<double> truck = trucks.back();
 	bool thereAreshopsToVisitbool = false;
@@ -190,6 +190,9 @@ bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & sh
 	int dataY;
 	double distanceDouble;
 	int distanceInt;
+	double waiting = -1;
+	
+	
 
 	for (int i = 1; i < shopDatabase.size(); i++)
 	{
@@ -203,19 +206,30 @@ bool calculateDistance(vector<vector<double>> & trucks, vector<vector<int>> & sh
 				dataX = shopDatabase[i][1];
 				dataY = shopDatabase[i][2];
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
-				distanceInt = int(distanceDouble);
-				if (shopDatabase[i][4] <= distanceInt + truck[3] < shopDatabase[i][5]) //open window <=dis+ current truck time < close window
+				
+				if (shopDatabase[i][4] <= distanceDouble + truck[3] < shopDatabase[i][5]) //open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
-					record.push_back(distanceInt);
+					record.push_back(distanceDouble);
 					distance.push_back(record);
+				}
+				else if (distanceDouble + truck[3] < shopDatabase[i][4])
+				{
+					double difference = shopDatabase[i][4] - (truck[3] + distanceDouble);
+					if (waiting == -1 || difference < waiting)
+					{
+						waiting = difference;
+						indexWaiting = i;
+						distanceWaiting = distanceDouble + waiting;
+					}
+					
 				}
 			}
 		}
 	}
 	printDistance(distance);
 	if (thereAreshopsToVisitbool) {
-		if (!enoughCapacity)
+		if (!enoughCapacity || (indexWaiting == -1 && distanceWaiting == -1 ))
 		{
 			cout << "Track Added" << endl;
 			addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2], shopDatabase[0][4]);
@@ -289,14 +303,16 @@ int main()
 	writeData(shopsDatabase);
 	addFlag(shopsDatabase);
 
-	cout << "shopsDatabase:" << endl;
+	std::cout << "shopsDatabase:" << endl;
 	//printShops(shopsDatabase);
 
 	while (duration_cast<seconds>(stop - start) < fiveMinutes) {
 		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][5]);
 		cout << "human centipide" << endl;
+		int indexWaiting = -1;
+		double timewaiting = -1;
 
-		while (calculateDistance(trucksDatabase, shopsDatabase, distance))
+		while (calculateDistance(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
 			printShops(shopsDatabase);
@@ -304,10 +320,13 @@ int main()
 			{
 				QuickSort(distance, 0, distance.size() - 1);
 			}
-
-			theBestFitIndex = drawNextClient(distance);
+			if (distance.size() > 0)
+			{
+				theBestFitIndex = drawNextClient(distance);
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, distance[theBestFitIndex][1]);
+			}
 			
-			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex);
+			
 			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
 			distance.clear();
