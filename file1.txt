@@ -1,20 +1,13 @@
-dummyname
+cvrptw4
 
 VEHICLE
 NUMBER     CAPACITY
-500	500
+ 10        10
 
-CUSTOMER						
-CUST NO.  XCOORD.    YCOORD.    DEMAND   READY TIME  DUE DATE   SERVICE TIME						
-0	54	3	0	0	8161	0
-1	90	14	113	6120	6543	67
-2	97	3	344	3258	4976	94
-3	32	18	433	6111	7772	43
-4	12	5	487	1070	5332	74
-5	50	49	440	6738	7390	83
-6	37	24	454	4867	7757	76
-7	92	74	335	1104	6114	19
-8	74	58	184	535	4409	86
-9	73	87	8	3733	6387	99
-10	41	27	424	6140	6504	31
-
+CUSTOMER
+CUST NO.  XCOORD.  YCOORD.    DEMAND   READY TIME  DUE DATE   SERVICE TIME
+ 
+    0     0        0          0        0           100          0
+    1     0        10         10       20          100         10
+    2     0        20         10       10          100         10
+    3     0        30         10       20          100         10
