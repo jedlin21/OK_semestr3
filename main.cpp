@@ -298,6 +298,7 @@ int drawNextClient(vector<vector<double>> distance, int rangeDistance)
 void saveToFile(vector<vector<double>> bestResult, string fileName)
 {
 	ofstream file;
+	file.precision(16);
 	file.open(fileName);
 	if (bestResult.size() == 0)
 		file << "-1" << "\n";
