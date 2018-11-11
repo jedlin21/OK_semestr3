@@ -288,7 +288,6 @@ int main()
 	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<int>> trucksDatabase;
-	int left, right;
 	vector<vector<double>> distance;
 	int theBestFitIndex = 0;
 	vector<vector<int>> bestResult;
