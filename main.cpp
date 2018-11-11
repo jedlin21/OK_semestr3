@@ -11,8 +11,6 @@ using namespace std;
 using namespace std::chrono;
 
 static int capacity; 
-static const int precision = 1000000;// Ugly. To change. Do you have an idea how do it nicely?
-
 
 void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data is damaged 
 {
@@ -54,17 +52,11 @@ void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data 
 						shop.push_back(data);
 
 					}
-					shop[4] *= precision;
-					shop[5] *= precision;
-					shop[6] *= precision;
 					shopDatabase.push_back(shop);
 					shop.clear();
 				}
 			}
-
 		}
-
-
 	}
 
 
@@ -108,7 +100,8 @@ void printTrucks(vector<vector<int>> fleet)//unnecessary printShops is identical
 {
 	for (int j = 0; j < fleet.size(); j++)
 	{
-		for (int i = 0; i < fleet[0].size(); i++)
+		cout << "Truck " << j << endl;
+		for (int i = 0; i < fleet[j].size(); i++)
 		{
 			cout << fleet[j][i] << " ";
 		}
@@ -179,7 +172,7 @@ void QuickSort(vector<vector<double>> & distance, int i, int j)
 	int right = j;
 	int index = (i + j) / 2;
 	double pivot = distance[index][1];
-	cout << "pivot" << pivot << endl;
+	//cout << "pivot" << pivot << endl;
 	while (i <= j)
 	{
 		while (distance[i][1] < pivot)
@@ -205,7 +198,7 @@ void updateTheTrackDatabase(vector<int> & truck, vector<vector<int>> & shopsData
 {
 	
 	truck[0] -= shopsDatabase[theBestFitIndex][3]; //capacity
-	truck[3] += shopsDatabase[theBestFitIndex][6] + ;  //time: add distance and service time
+	truck[3] += shopsDatabase[theBestFitIndex][6];  //time: add distance and service time
 	truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
 	truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
 	truck.push_back(theBestFitIndex);
@@ -223,8 +216,6 @@ bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopD
 	double distanceDouble;
 	int distanceInt;
 
-
-
 	for (int i = 1; i < shopDatabase.size(); i++)
 	{
 		if (shopDatabase[i].back() == 0 )// shop must be not visited 
@@ -237,7 +228,6 @@ bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopD
 				dataX = shopDatabase[i][1];
 				dataY = shopDatabase[i][2];
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
-				distanceDouble = distanceDouble * precision;
 				distanceInt = int(distanceDouble);
 				if (shopDatabase[i][4] <= distanceInt + truck[3] < shopDatabase[i][5]) //open window <=dis+ current truck time < close window
 				{
@@ -245,32 +235,30 @@ bool calculateDistance(vector<vector<int>> & trucks, vector<vector<int>> & shopD
 					record.push_back(distanceInt);
 					distance.push_back(record);
 				}
-				
-
 			}
 		}
-
-
-
 	}
-	if (!enoughCapacity)
-	{
-		addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2]);
-	}
-	cout << "bool"<<thereAreshopsToVisitbool << endl;
-	return thereAreShopsToVisit;
 	printDistance(distance);
-
+	if (thereAreshopsToVisitbool) {
+		if (!enoughCapacity)
+		{
+			cout << "Track Added" << endl;
+			addTruck(trucks, capacity, shopDatabase[0][1], shopDatabase[0][2]);
+		}
+		return true;
+	}
+	else
+		return false;
 }
 
-void selectBetterResult(vector<vector<int>> & bestResult, vector<vector<int>> trucksDatabase) {
-	vector<int> buforResult;
-
+void selectBetterResult(vector<vector<int>> & bestResult, vector<vector<int>> trucksDatabase, string mode="number") {
+	// Compare previous best result with actual trucksDatabase and choose better result.
 	if (bestResult.empty())
 	{
 		bestResult = trucksDatabase;
 	}
-	else {
+	else if (mode == "distance")
+	{
 		int maxTime = 0;
 		for (int i = 0; i < trucksDatabase.size(); i++) {
 			if (maxTime > trucksDatabase[i][3])
@@ -284,7 +272,14 @@ void selectBetterResult(vector<vector<int>> & bestResult, vector<vector<int>> tr
 			bestResult.push_back(maxT);
 		}
 	}
+	else if (mode == "number") {
+		if (trucksDatabase.size() < bestResult.size())
+			bestResult = trucksDatabase;
+	}
+	else
+		throw new exception("Wrong mode exception");
 }
+
 
 int main()
 {
@@ -293,16 +288,12 @@ int main()
 	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<int>> trucksDatabase;
-	int left, right;
 	vector<vector<double>> distance;
 	int theBestFitIndex = 0;
 	vector<vector<int>> bestResult;
 
 	writeData(shopsDatabase);
 	addFlag(shopsDatabase);
-
-
-
 
 
 	cout << "shopsDatabase:" << endl;
@@ -315,24 +306,27 @@ int main()
 		while (calculateDistance(trucksDatabase, shopsDatabase, distance))
 		{   //While there are no more 0 in last column.
 			 //Current track == trucksDatabase.back()
-			left = 0;
-			right = distance.size() - 1;
-			QuickSort(distance, left, right);
+			printShops(shopsDatabase);
+			QuickSort(distance, 0, distance.size() - 1);
+			// random dla 5 wynikow, dodac do trucka - pamietac o serwis time
 			theBestFitIndex = (int)distance[0][0];
 			updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex);
 			//Mark shop as served
 			shopsDatabase[theBestFitIndex].back() = 1;
-
+			distance.clear();
 		}
 		selectBetterResult(bestResult, trucksDatabase);
 		cout << "Trucks:" << endl;
 		printTrucks(trucksDatabase);
-
-		// random dla 5 wynikow, dodac do trucka - pamietac o serwis time
+		//Clear before next iteration
 		ResetVisitedFlag(shopsDatabase);
 		trucksDatabase.clear();
+		distance.clear();
+		//
 		stop = high_resolution_clock::now();
 	}
+	cout << "Best result" << endl;
+	printTrucks(bestResult);
 	system("pause");
 	return 0;
 }
