@@ -295,14 +295,15 @@ double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 	return serviceTime;
 }
 
-int drawNextClient(vector<vector<double>> distance)
+int drawNextClient(vector<vector<double>> distance, int rangeDistance)
 {
 	srand(time(NULL));
-	int rangeDistance = distance.size();
-
+	cout << "dis" << rangeDistance << endl;
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
+
+
 
 void saveToFile(vector<vector<double>> bestResult, string fileName)
 {
@@ -378,16 +379,22 @@ int main()
 			if (distance.size() > 5)
 			{
 				QuickSort(distance, 0, distance.size() - 1);
+				theBestFitIndex = drawNextClient(distance, 5);
+				cout << theBestFitIndex << endl;
+				cout << (int)distance[theBestFitIndex][0] << endl;
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
 			}
-			if (distance.size() > 0)
+			else if (0 < distance.size() && distance.size() <= 5)
 			{
-				theBestFitIndex = drawNextClient(distance);
+				cout << "dis1" << distance.size() << endl;
+				theBestFitIndex = drawNextClient(distance, distance.size());
 				cout << theBestFitIndex << endl;
 				cout << (int)distance[theBestFitIndex][0] << endl;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
 			}
 			else if (indexWaiting != -1 && timewaiting != -1)
 			{
+				cout << "dis2" << distance.size() << endl;
 				theBestFitIndex = indexWaiting;
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
 
