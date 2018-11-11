@@ -324,8 +324,32 @@ int main()
 
 	std::cout << "shopsDatabase:" << endl;
 	//printShops(shopsDatabase);
+	int firstCheck = 1;
+	double distanceDouble;
+	double wait;
+	for (int i = 1; i < shopsDatabase.size(); i++)
+	{
+		wait = 0;
+		if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
+		{
+			firstCheck = 0;
+			break;
+		}
+		distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
 
-	while (duration_cast<seconds>(stop - start) < fiveMinutes) {
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
+		{
+			wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
+		}
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait>= shopsDatabase[0][5])
+		{
+			firstCheck = 0;
+			break;
+		}
+	}
+	
+
+	while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes) ) {
 		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][5]);
 		cout << "human centipide" << endl;
 		int indexWaiting = -1;
