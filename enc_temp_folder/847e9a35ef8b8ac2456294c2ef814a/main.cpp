@@ -320,7 +320,8 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 
 
 int main()
-{	
+{
+	
 	seconds fiveMinutes(300);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
