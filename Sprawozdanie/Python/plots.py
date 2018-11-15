@@ -49,12 +49,8 @@ def strojeniePlot(strojenieData = './strojenie_test.txt'):
     plt.show()
 
 
-if __name__ == '__main__':
-    strojeniePlot()
-    
-    trucskDirec = './Trucks.txt'
+def TrucksPlot(trucskDirec = './Trucks.txt'):
     plotableData = importData(trucskDirec)
-    
     
     Instances = list()
     XTrucks = list()
@@ -64,18 +60,52 @@ if __name__ == '__main__':
         XTrucks.append(int(plotableData[row][1]))
         XDistance.append(plotableData[row][2])
     
-    plt.title("Distances plot", fontsize=18)
+    plt.title("Distances", fontsize=18)
     plt.xlabel("Number of instances", fontsize=17)
     plt.ylabel("Distance", fontsize=17)
     plt.plot(Instances, XDistance , ".-")
     plt.show()
     
-    plt.title("Truck number plot", fontsize=18)
+    plt.title("Truck number", fontsize=18)
     plt.xlabel("Number of instances", fontsize=17)
     plt.ylabel("Number of trucks", fontsize=17)
     plt.yticks(range(0,22, 2))
     plt.plot(Instances, XTrucks , ".-")
     plt.show()
+    
+    
+def TimePlot(timeDirec = './time_test.txt'):
+    plotableData = importData(timeDirec)
+    
+    instances = list()
+    time = list()
+    
+    #Make time dictionary
+    timeDict = dict()
+    for row in plotableData:
+        timeDict[int(row[0])] = list()
+    #Add values to timeDict
+    for row in plotableData:
+        timeDict[int(row[0])].append(row[1])
+    #Average
+    
+    for key in timeDict.keys():
+        instances.append(key)
+        time.append(np.mean(timeDict[key]))
+    
+    plt.title("Time", fontsize=18)
+    plt.xlabel("Number of instances", fontsize=17)
+    plt.ylabel("Time [s]", fontsize=17)
+    plt.plot(instances, time , ".-")
+    plt.show()
+
+
+if __name__ == '__main__':
+    strojeniePlot()
+    TrucksPlot()
+    TimePlot()
+    
+
     
     
     
