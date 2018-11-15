@@ -275,7 +275,7 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 			bestResult = trucksDatabase;
 	}
 	else
-		throw new exception("Wrong mode exception");
+		cout << "Wrong mode exception" << endl;
 }
 
 double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
