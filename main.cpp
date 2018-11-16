@@ -321,7 +321,7 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 
 int main()
 {	
-	seconds fiveMinutes(300);
+	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
@@ -333,11 +333,12 @@ int main()
 	addFlag(mainShopsDatabase);
 	vector<vector<double>> resultVector;
 	vector<double> resultVectorBufor;
-	for (int runNumber = 0; runNumber < 3; runNumber++)
+	for (int runNumber = 0; runNumber < 2; runNumber++)
 	{
-		for (int range = 10; range > 0; range--)
-		{
-			for (int instances = 250; instances < mainShopsDatabase.size(); instances += 250)
+		//for (int range = 10; range > 0; range--)
+		//{
+		int range = 5;
+			for (int instances = 10; instances < mainShopsDatabase.size(); instances += 10)
 			{
 				auto start = high_resolution_clock::now();
 				auto stop = high_resolution_clock::now();
@@ -369,7 +370,7 @@ int main()
 				}
 
 
-				while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
+				//while (firstCheck == 1){// && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
 					addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4], shopsDatabase[0][6]);
 
 					int indexWaiting = -1;
@@ -412,19 +413,18 @@ int main()
 
 					//
 					stop = high_resolution_clock::now();
-				}
+				//}
 				resultVectorBufor.clear();
-				resultVectorBufor.push_back(range);
+				
 				resultVectorBufor.push_back(instances);
-				resultVectorBufor.push_back(bestResult.size());
-				resultVectorBufor.push_back(calculateSumServiceTime(bestResult));
+				resultVectorBufor.push_back(duration_cast<microseconds>(stop - start).count() / 1000000.0);
 				resultVector.push_back(resultVectorBufor);
 
 				bestResult.clear();
 				//printTrucks(bestResult);
 			}
 		}
-	}
+	//}
 	saveToFile(resultVector, "file.txt");
 	//printTrucks(bestResult);
 	system("pause");
