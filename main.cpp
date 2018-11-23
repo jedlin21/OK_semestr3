@@ -211,12 +211,12 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 				else if (distanceDouble + truck[3] < shopDatabase[i][4])
 				{
 					double difference = shopDatabase[i][4] - (truck[3] + distanceDouble);
-					if (waiting == -1 || difference < waiting)
-					{
+					//if (waiting == -1 || difference < waiting)
+					//{
 						waiting = difference;
 						indexWaiting = i;
 						distanceWaiting = distanceDouble + waiting;
-					}
+					//}
 				}
 			}
 		}
@@ -381,8 +381,8 @@ int main()
 						 //Current track == trucksDatabase.back()
 						if (distance.size() > range)
 						{
-							QuickSort(distance, 0, distance.size() - 1);
-							theBestFitIndex = drawNextClient(distance, range);
+							//QuickSort(distance, 0, distance.size() - 1);
+							theBestFitIndex = drawNextClient(distance, distance.size());
 							updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
 							shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
 						}
