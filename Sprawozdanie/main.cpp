@@ -323,7 +323,7 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(300);
+	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
