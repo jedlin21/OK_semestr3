@@ -191,19 +191,20 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 
 	for (int i = 1; i < shopDatabase.size(); i++)
 	{
-		dataX = shopDatabase[i][1];
-		dataY = shopDatabase[i][2];
-		distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
-		double depotDistance = sqrt(pow((dataX - shopDatabase[0][1]), 2) + pow((dataY - shopDatabase[0][2]), 2));
-		if (shopDatabase[i].back() == 0 && truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5])// shop must be not visited 
+		
+		if (shopDatabase[i].back() == 0)// shop must be not visited 
 		{
 			thereAreshopsToVisitbool = true;
 			if (truck[0] >= shopDatabase[i][3]) // truck has enough capacity
 			{
 				enoughCapacity = true;
 				vector<double> record;
-				
-				if ((shopDatabase[i][4] <= distanceDouble + truck[3] )&& (distanceDouble + truck[3] < shopDatabase[i][5])) //open window <=dis+ current truck time < close window
+				dataX = shopDatabase[i][1];
+				dataY = shopDatabase[i][2];
+				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
+				double depotDistance = sqrt(pow((dataX - shopDatabase[0][1]), 2) + pow((dataY - shopDatabase[0][2]), 2));
+
+				if ((shopDatabase[i][4] <= distanceDouble + truck[3] )&& (distanceDouble + truck[3] < shopDatabase[i][5]) && truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]) //open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
 					record.push_back(distanceDouble);
