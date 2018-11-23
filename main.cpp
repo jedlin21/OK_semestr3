@@ -242,7 +242,7 @@ double calculateDistance(vector<double> first, vector<int> second)
 	return sqrt(pow((secondX - firstX), 2) + pow((secondY - firstY), 2));
 }
 
-void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode="sumTime") {
+void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode="number") {
 	// Compare previous best result with actual trucksDatabase and choose better result.
 	if (bestResult.empty())
 	{
