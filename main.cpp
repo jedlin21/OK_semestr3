@@ -210,7 +210,7 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 					record.push_back(distanceDouble);
 					distance.push_back(record);
 				}
-				else if (distanceDouble + truck[3] < shopDatabase[i][4])
+				else if ((distanceDouble + truck[3] < shopDatabase[i][4])&& (truck[3]+distanceDouble+ shopDatabase[i][4] - (truck[3] + distanceDouble)+ shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))
 				{
 					double difference = shopDatabase[i][4] - (truck[3] + distanceDouble);
 					if (waiting == -1 || difference < waiting)
