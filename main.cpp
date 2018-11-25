@@ -107,6 +107,15 @@ void printTrucks(vector<vector<double>> fleet)//unnecessary printShops is identi
 	}
 }
 
+void printTruck(vector<double> truck)//unnecessary printShops is identical
+{
+	for (int i = 0; i < truck.size(); i++)
+	{
+		cout << truck[i] << " ";
+	}
+	cout << endl;
+}
+
 void printDistance(vector<vector<double>> fleet)
 {
 	for (int j = 0; j < fleet.size(); j++)
@@ -210,7 +219,7 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 					record.push_back(distanceDouble);
 					distance.push_back(record);
 				}
-				else if ((distanceDouble + truck[3] < shopDatabase[i][4])&& (truck[3]+distanceDouble+ shopDatabase[i][4] - (truck[3] + distanceDouble)+ shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))
+				else if ((distanceDouble + truck[3] < shopDatabase[i][4]) && (truck[3] + distanceDouble + shopDatabase[i][4] - (truck[3] + distanceDouble) + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))
 				{
 					double difference = shopDatabase[i][4] - (truck[3] + distanceDouble);
 					if (waiting == -1 || difference < waiting)
@@ -297,7 +306,6 @@ double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 
 int drawNextClient(int rangeDistance)
 {
-	srand(time(NULL));
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
@@ -305,13 +313,13 @@ int drawNextClient(int rangeDistance)
 void drawNextTrucksToMix(int range, vector<int> & chosen)
 {
 	chosen.clear();
-	srand(time(NULL));
+
 	int chosen1 = rand() % range;
 	int chosen2;
 	while ((chosen2 = rand() % range) == chosen1)
 		chosen2 = rand() % range;
 	chosen.push_back(chosen1);
-	chosen.push_back(chosen1);
+	chosen.push_back(chosen2);
 }
 
 
@@ -390,11 +398,11 @@ vector<vector<double>> findFirstTrucksDatabase(vector<vector<int>> shopsDatabase
 		distance.clear();
 
 		stop = high_resolution_clock::now();
-		return bestResult;
 	}
+	return bestResult;
 }
 
-bool truckManage(vector<double> truck, vector<vector<int>> shopsDatabase)
+bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 {
 	double actualTime = shopsDatabase[0][4];
 	int actualX = shopsDatabase[0][1];
@@ -403,53 +411,86 @@ bool truckManage(vector<double> truck, vector<vector<int>> shopsDatabase)
 	{
 		actualTime += calculateDistance(actualX, actualY, shopsDatabase[truck[i]]);
 		//check if truck fit to time window
-		if (actualTime > shopsDatabase[truck[i]][5])
+		if (actualTime > shopsDatabase[truck[i]][5]) {
+			//cout << actualTime << " "<< shopsDatabase[truck[i]][5] << "  1"<< "  " << i  << endl;
 			return false;
+		}
 
 		if (actualTime < shopsDatabase[truck[i]][4])
 			actualTime = shopsDatabase[truck[i]][4];
 		actualTime += shopsDatabase[truck[i]][6];
 	}
 	actualTime += calculateDistance(actualX, actualY, shopsDatabase[0]);
-	if (actualTime > shopsDatabase[0][5])
+	if (actualTime > shopsDatabase[0][5]) {
+		//cout << "2" << endl;
 		return false;
+	}
 	else
+		truck[3] = actualTime;
 		return true;
 }
 
 
 void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, vector<vector<int>> shopsDatabase)
 {
-	int firstSlice = rand() % trucksDatabase[chosen[0]].size();
-	int secondSlice = rand() % trucksDatabase[chosen[1]].size();
+	int firstSlice;
+	while ((firstSlice = rand() % trucksDatabase[chosen[0]].size()) < 4)
+		continue;
+	int secondSlice;
+	while ((secondSlice = rand() % trucksDatabase[chosen[1]].size()) < 4)
+		continue;
 
 	vector<double>::const_iterator first = trucksDatabase[chosen[0]].begin();
 	vector<double>::const_iterator last = trucksDatabase[chosen[0]].begin() + firstSlice;
 	vector<double> newFirstTruck(first, last); //only left part
 	first = trucksDatabase[chosen[1]].begin() + secondSlice;
-	trucksDatabase[chosen[1]].begin() + trucksDatabase[chosen[1]].size();
+	last = trucksDatabase[chosen[1]].end();
 	newFirstTruck.insert(newFirstTruck.end(), first, last);
 
 	first = trucksDatabase[chosen[1]].begin();
 	last = trucksDatabase[chosen[1]].begin() + secondSlice;
 	vector<double> newSecondTruck(first, last); //only left part
 	first = trucksDatabase[chosen[0]].begin() + firstSlice;
-	last = trucksDatabase[chosen[0]].begin() + trucksDatabase[chosen[0]].size();
+	last = trucksDatabase[chosen[0]].end();
 	newSecondTruck.insert(newSecondTruck.end(), first, last);
 
-	if (truckManage(newFirstTruck, shopsDatabase) and truckManage(newSecondTruck, shopsDatabase))
+	/*cout << "truck" << endl;
+	cout << firstSlice << " " << secondSlice << endl;
+	printTruck(trucksDatabase[chosen[0]]);
+	printTruck(trucksDatabase[chosen[1]]);
+	printTruck(newFirstTruck);
+	printTruck(newSecondTruck);
+	cout << endl ;*/
+
+
+	if (truckManage(newFirstTruck, shopsDatabase) && truckManage(newSecondTruck, shopsDatabase))
 	{
 		trucksDatabase[chosen[0]] = newFirstTruck;
 		trucksDatabase[chosen[1]] = newSecondTruck;
+		/*cout << "change" << endl;
+		cout << "truck" << endl;
+		cout << firstSlice << " " << secondSlice << endl;
+		printTruck(trucksDatabase[chosen[0]]);
+		printTruck(trucksDatabase[chosen[1]]);
+		printTruck(newFirstTruck);
+		printTruck(newSecondTruck);
+		cout << endl;*/
+		cout.precision(16);
+		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
+		/*printTruck(trucksDatabase[chosen[0]]);
+		printTruck(trucksDatabase[chosen[1]]);*/
 	}
+	
 }
 
 int main(int argc, char * argv[])
 {
+	srand(time(NULL));
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
 	seconds fiveMinutes(10);
+	int howManySeondsForGRASP = 3;
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -482,7 +523,8 @@ int main(int argc, char * argv[])
 	}
 
 	if (firstCheck == 1)
-		trucksDatabase = findFirstTrucksDatabase(shopsDatabase, 1);
+		trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
+	cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
 	while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
 
 		//I have trucksDatabase here. What should I do next?
@@ -507,14 +549,14 @@ int main(int argc, char * argv[])
 		mixTracks(buforTrucksDatabase, chosen, shopsDatabase);
 		selectBetterResult(trucksDatabase, buforTrucksDatabase);
 
-		cout.precision(16);
-		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
+		/*cout.precision(16);
+		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";*/
 
 		stop = high_resolution_clock::now();
 	}
-
+	cout << "end" << endl;
 	saveToFile(trucksDatabase, "file.txt");
-	
+
 	//printTrucks(trucksDatabase);
 	system("pause");
 	return 0;
