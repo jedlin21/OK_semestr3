@@ -404,9 +404,9 @@ vector<vector<double>> findFirstTrucksDatabase(vector<vector<int>> shopsDatabase
 
 bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 {
-	double actualTime = shopsDatabase[0][4];
-	int actualX = shopsDatabase[0][1];
-	int actualY = shopsDatabase[0][2];
+	double actualTime = shopsDatabase[0][4]; // depo open
+	int actualX = shopsDatabase[0][1];       // depo X
+	int actualY = shopsDatabase[0][2];       // depo Y
 	for (int i = 4; i < truck.size(); i++)
 	{
 		actualTime += calculateDistance(actualX, actualY, shopsDatabase[truck[i]]);
@@ -419,6 +419,9 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 		if (actualTime < shopsDatabase[truck[i]][4])
 			actualTime = shopsDatabase[truck[i]][4];
 		actualTime += shopsDatabase[truck[i]][6];
+		actualX = shopsDatabase[truck[i]][1];
+		actualY = shopsDatabase[truck[i]][2];
+
 	}
 	actualTime += calculateDistance(actualX, actualY, shopsDatabase[0]);
 	if (actualTime > shopsDatabase[0][5]) {
@@ -489,8 +492,8 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(10);
-	int howManySeondsForGRASP = 3;
+	seconds fiveMinutes(100);
+	int howManySeondsForGRASP = 20;
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
