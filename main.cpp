@@ -204,13 +204,13 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
 				double depotDistance = sqrt(pow((dataX - shopDatabase[0][1]), 2) + pow((dataY - shopDatabase[0][2]), 2));
 
-				if ((shopDatabase[i][4] <= distanceDouble + truck[3]) && (distanceDouble + truck[3] < shopDatabase[i][5]) && truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]) //open window <=dis+ current truck time < close window
+				if ((shopDatabase[i][4] <= distanceDouble + truck[3]) && (distanceDouble + truck[3] < shopDatabase[i][5]) && (truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))//open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
 					record.push_back(distanceDouble);
 					distance.push_back(record);
 				}
-				else if (distanceDouble + truck[3] < shopDatabase[i][4])
+				else if (distanceDouble + truck[3] < shopDatabase[i][4] && (truck[3]+distanceDouble+(shopDatabase[i][4]-(truck[3]+distanceDouble))+shopDatabase[i][6]+depotDistance<=shopDatabase[0][5]))
 				{
 					double difference = shopDatabase[i][4] - (truck[3] + distanceDouble);
 					if (waiting == -1 || difference < waiting)
