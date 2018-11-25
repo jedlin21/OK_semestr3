@@ -293,7 +293,7 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 			bestResult = trucksDatabase;
 	}
 	else
-		throw new exception("Wrong mode exception");
+		cout << "Wrong mode exception" << endl;
 }
 
 double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
@@ -407,9 +407,11 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 	double actualTime = shopsDatabase[0][4]; // depo open
 	int actualX = shopsDatabase[0][1];       // depo X
 	int actualY = shopsDatabase[0][2];       // depo Y
+	int actualCapacity = 0;
 	for (int i = 4; i < truck.size(); i++)
 	{
 		actualTime += calculateDistance(actualX, actualY, shopsDatabase[truck[i]]);
+		actualCapacity += shopsDatabase[truck[i]][3];
 		//check if truck fit to time window
 		if (actualTime > shopsDatabase[truck[i]][5]) {
 			//cout << actualTime << " "<< shopsDatabase[truck[i]][5] << "  1"<< "  " << i  << endl;
@@ -423,6 +425,9 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 		actualY = shopsDatabase[truck[i]][2];
 
 	}
+	if (actualCapacity > capacity)
+		return false;
+
 	actualTime += calculateDistance(actualX, actualY, shopsDatabase[0]);
 	if (actualTime > shopsDatabase[0][5]) {
 		//cout << "2" << endl;
