@@ -11,5 +11,5 @@ void addTruck(vector<vector<int>> & , int, int, int );
 int findTheBestFit(vector<vector<int>> & , vector<vector<int>> & );
 void updateTheTrackDatabase(vector<int> & , vector<vector<int>> & , int);
 double calculateSumServiceTime(vector<vector<double>> );
-double calculateDistance(vector<double> , vector<int> );
+double calculateDistanceToBase(vector<double> , vector<int> );
 
