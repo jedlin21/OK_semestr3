@@ -288,13 +288,24 @@ double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 	return serviceTime;
 }
 
-int drawNextClient(vector<vector<double>> distance, int rangeDistance)
+int drawNextClient(int rangeDistance)
 {
 	srand(time(NULL));
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
 
+void drawNextTrucksToMix(int range, vector<int> & chosen)
+{
+	chosen.clear();
+	srand(time(NULL));
+	int chosen1 = rand() % range;
+	int chosen2;
+	while ((chosen2 = rand() % range) == chosen1)
+		chosen2 = rand() % range;
+	chosen.push_back(chosen1);
+	chosen.push_back(chosen1);
+}
 
 
 void saveToFile(vector<vector<double>> bestResult, string fileName)
@@ -320,6 +331,62 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	file.close();
 }
 
+vector<vector<double>> findFirstTrucksDatabase(vector<vector<int>> shopsDatabase, int time)
+{
+	seconds worksTime(time);
+	int theBestFitIndex = 0;
+	vector<vector<double>> distance;
+	auto start = high_resolution_clock::now();
+	auto stop = high_resolution_clock::now();
+	vector<vector<double>> bestResult;
+	vector<vector<double>> trucksDatabase;
+
+	while (duration_cast<seconds>(stop - start) < worksTime) {
+		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4], shopsDatabase[0][6]);
+
+		int indexWaiting = -1;
+		double timewaiting = -1;
+
+		while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
+		{   //While there are no more 0 in last column.
+			 //Current track == trucksDatabase.back()
+			if (distance.size() > 5)
+			{
+				QuickSort(distance, 0, distance.size() - 1);
+				theBestFitIndex = drawNextClient(5);
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
+			}
+			else if (0 < distance.size() && distance.size() <= 5)
+			{
+				theBestFitIndex = drawNextClient(distance.size());
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
+				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
+			}
+			else if (distance.size() == 0 && indexWaiting != -1 && timewaiting != -1)
+			{
+				theBestFitIndex = indexWaiting;
+				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
+				shopsDatabase[theBestFitIndex].back() = 1; //Mark shop as served
+			}
+
+			distance.clear();
+			indexWaiting = -1;
+			timewaiting = -1;
+		}
+
+		trucksDatabase.back()[3] += calculateDistance(trucksDatabase.back(), shopsDatabase[0]); //update last truck
+		selectBetterResult(bestResult, trucksDatabase);
+		//Clear before next iteration
+		ResetVisitedFlag(shopsDatabase);
+		trucksDatabase.clear();
+		distance.clear();
+
+		stop = high_resolution_clock::now();
+		return bestResult;
+	}
+}
+
 
 int main(int argc, char * argv[])
 {
@@ -327,11 +394,11 @@ int main(int argc, char * argv[])
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
 	seconds fiveMinutes(1);
-	vector<vector<int>> shopsDatabase;
-	vector<vector<double>> trucksDatabase;
-	vector<vector<double>> distance;
-	int theBestFitIndex = 0;
+	vector<vector<int>> shopsDatabase;	
 	vector<vector<double>> bestResult;
+	vector<vector<double>> trucksDatabase;
+	int populationSize;
+
 	writeData(shopsDatabase, fileName);
 	addFlag(shopsDatabase);
 
@@ -359,53 +426,41 @@ int main(int argc, char * argv[])
 		}
 	}
 
+	if (firstCheck == 1)
+		trucksDatabase = findFirstTrucksDatabase(shopsDatabase, 1);
 
-	while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
-		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4], shopsDatabase[0][6]);
+	while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
+		
+		//I have trucksDatabase here. What should I do next?
+		//hmmm
+		//You should take 2 trucks and mix them.
+		//Then you check if database is correct?
+		//when it is you check if that result is beter ... or you collect a few result and after X(tune-upped) try you chose which are better.
+		//and when it isn't correct, then randomly chose next 
+		//capacity
+		//okno czasowe przy zmianie
+		//
 
-		int indexWaiting = -1;
-		double timewaiting = -1;
+		int X = 0;
+		int range = trucksDatabase.size();
+		vector<int> chosen;
+		
+		while (X < populationSize)
+		{
+			drawNextTrucksToMix(range, chosen);
 
-		while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
-		{   //While there are no more 0 in last column.
-			 //Current track == trucksDatabase.back()
-			if (distance.size() > 5)
-			{
-				QuickSort(distance, 0, distance.size() - 1);
-				theBestFitIndex = drawNextClient(distance, 5);
-				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
-				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
-			}
-			else if (0 < distance.size() && distance.size() <= 5)
-			{
-				theBestFitIndex = drawNextClient(distance, distance.size());
-				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, (int)distance[theBestFitIndex][0], distance[theBestFitIndex][1]);
-				shopsDatabase[(int)distance[theBestFitIndex][0]].back() = 1; //Mark shop as served
-			}
-			else if (distance.size() == 0 && indexWaiting != -1 && timewaiting != -1)
-			{
-				theBestFitIndex = indexWaiting;
-				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
-				shopsDatabase[theBestFitIndex].back() = 1; //Mark shop as served
-			}
 
-			distance.clear();
-			indexWaiting = -1;
-			timewaiting = -1;
 		}
 
-		trucksDatabase.back()[3] += calculateDistance(trucksDatabase.back(), shopsDatabase[0]); //update last truck
 		selectBetterResult(bestResult, trucksDatabase);
 		//Clear before next iteration
 		ResetVisitedFlag(shopsDatabase);
 		trucksDatabase.clear();
-		distance.clear();
 
-		//
 		stop = high_resolution_clock::now();
 	}
+
 	saveToFile(bestResult, "file.txt");
 	printTrucks(bestResult);
-	system("pause");
 	return 0;
 }
