@@ -309,7 +309,7 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	else
 	{
 		file << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
-		cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
+		//cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
 	}
 	for (int i = 0; i < bestResult.size(); i++)
 	{
@@ -327,7 +327,7 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(300);
+	seconds fiveMinutes(1);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
@@ -406,7 +406,7 @@ int main(int argc, char * argv[])
 		stop = high_resolution_clock::now();
 	}
 	saveToFile(bestResult, "file.txt");
-	printTrucks(bestResult);
-	system("pause");
+	//printTrucks(bestResult);
+	//system("pause");
 	return 0;
 }
