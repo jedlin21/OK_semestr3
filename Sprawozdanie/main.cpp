@@ -321,7 +321,11 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
+<<<<<<< HEAD
 	seconds fiveMinutes(3);
+=======
+	seconds fiveMinutes(1);
+>>>>>>> 4950fbf2bf4255528027075f0ccbf2833859d62a
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
