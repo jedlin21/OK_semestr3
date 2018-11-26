@@ -204,8 +204,9 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
 				double depotDistance = sqrt(pow((dataX - shopDatabase[0][1]), 2) + pow((dataY - shopDatabase[0][2]), 2));
 
-				if ((shopDatabase[i][4] <= distanceDouble + truck[3]) && (distanceDouble + truck[3] < shopDatabase[i][5]) && (truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))//open window <=dis+ current truck time < close window
+				if ((shopDatabase[i][4] <= distanceDouble + truck[3]) && (distanceDouble + truck[3] <= shopDatabase[i][5]) && (truck[3] + distanceDouble + shopDatabase[i][6] + depotDistance <= shopDatabase[0][5]))//open window <=dis+ current truck time < close window
 				{
+					
 					record.push_back((double)i);
 					record.push_back(distanceDouble);
 					distance.push_back(record);
@@ -352,7 +353,7 @@ int main(int argc, char * argv[])
 		{
 			wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
 		}
-		if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait > shopsDatabase[0][5])
 		{
 			firstCheck = 0;
 			break;
