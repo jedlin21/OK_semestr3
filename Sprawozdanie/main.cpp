@@ -6,14 +6,14 @@
 #include "functions.h"
 #include <chrono>
 #include <math.h>
-#include <time.h> 
+#include <time.h>
 
 using namespace std;
 using namespace std::chrono;
 
-static int capacity; 
+static int capacity;
 
-void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data is damaged 
+void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data is damaged
 {
 	string line, newword; //temporary, only to help read proper data
 	vector<int> shop;
@@ -21,7 +21,7 @@ void writeData(vector<vector<int>> & shopDatabase) // to improve - fail if data 
 
 	ifstream file;
 
-	file.open("file1.txt", ios::in);
+	file.open("input.txt", ios::in);
 	while (!file.eof())
 	{
 
@@ -186,12 +186,12 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 	int dataY;
 	double distanceDouble;
 	double waiting = -1;
-	
-	
+
+
 
 	for (int i = 1; i < shopDatabase.size(); i++)
 	{
-		if (shopDatabase[i].back() == 0 )// shop must be not visited 
+		if (shopDatabase[i].back() == 0 )// shop must be not visited
 		{
 			thereAreshopsToVisitbool = true;
 			if (truck[0] >= shopDatabase[i][3]) // truck has enough capacity
@@ -201,7 +201,7 @@ bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & s
 				dataX = shopDatabase[i][1];
 				dataY = shopDatabase[i][2];
 				distanceDouble = sqrt(pow((dataX - truckX), 2) + pow((dataY - truckY), 2));
-				
+
 				if ((shopDatabase[i][4] <= distanceDouble + truck[3] )&& (distanceDouble + truck[3] < shopDatabase[i][5])) //open window <=dis+ current truck time < close window
 				{
 					record.push_back((double)i);
@@ -275,7 +275,7 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 			bestResult = trucksDatabase;
 	}
 	else
-		throw new exception("Wrong mode exception");
+		cout << "Wrong mode exception" << endl;
 }
 
 double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
@@ -299,14 +299,12 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 {
 	ofstream file;
 	file.precision(26);
-	cout.precision(16);
 	file.open(fileName);
 	if (bestResult.size() == 0)
 		file << "-1" << "\n";
-	else 
+	else
 	{
 		file << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
-		cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
 	}
 	for (int i = 0; i < bestResult.size(); i++)
 	{
@@ -323,7 +321,7 @@ int main()
 {
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(300);
+	seconds fiveMinutes(3);
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> trucksDatabase;
 	vector<vector<double>> distance;
@@ -356,11 +354,11 @@ int main()
 			break;
 		}
 	}
-	
+
 
 	while (firstCheck == 1 && (duration_cast<seconds>(stop - start) < fiveMinutes) ) {
 		addTruck(trucksDatabase, capacity, shopsDatabase[0][1], shopsDatabase[0][2], shopsDatabase[0][4],  shopsDatabase[0][6]);
-		
+
 		int indexWaiting = -1;
 		double timewaiting = -1;
 
@@ -386,24 +384,24 @@ int main()
 				updateTheTrackDatabase(trucksDatabase.back(), shopsDatabase, theBestFitIndex, timewaiting);
 				shopsDatabase[theBestFitIndex].back() = 1; //Mark shop as served
 			}
-			
+
 			distance.clear();
 			indexWaiting = -1;
 			timewaiting = -1;
 		}
-		
+
 		trucksDatabase.back()[3] += calculateDistance(trucksDatabase.back(), shopsDatabase[0]); //update last truck
 		selectBetterResult(bestResult, trucksDatabase);
 		//Clear before next iteration
 		ResetVisitedFlag(shopsDatabase);
 		trucksDatabase.clear();
 		distance.clear();
-	
+
 		//
 		stop = high_resolution_clock::now();
 	}
 	saveToFile(bestResult, "file.txt");
-	printTrucks(bestResult);
-	system("pause");
+	//printTrucks(bestResult);
+	//system("pause");
 	return 0;
 }
