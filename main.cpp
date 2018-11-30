@@ -508,62 +508,68 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 8; instances <= shopsData.size(); instances += 250) {
-		
-		vector<vector<int>> shopsDatabase = shopsData; /// Here add "take first instances objects"
-		cout << instances << endl;
-		int firstCheck = 1;
-		double distanceDouble;
-		double wait;
-		for (int i = 1; i < shopsDatabase.size(); i++)
+	for (int instances = 250; instances <= shopsData.size(); instances += 250) {
+
+		for (double factor = 0.2; factor <= 1; factor += 0.2)
 		{
-			wait = 0;
-			if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
+			vector<vector<int>> shopsDatabase = shopsData; /// Here add "take first instances objects"
+			cout << instances << endl;
+			int firstCheck = 1;
+			double distanceDouble;
+			double wait;
+			for (int i = 1; i < shopsDatabase.size(); i++)
 			{
-				firstCheck = 0;
-				break;
-			}
-			distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
 
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
-			{
-				wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
+				wait = 0;
+				if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
+				{
+					firstCheck = 0;
+					break;
+				}
+				distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
+
+				if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
+				{
+					wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
+				}
+				if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
+				{
+					firstCheck = 0;
+					break;
+				}
 			}
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
-			{
-				firstCheck = 0;
-				break;
+
+			if (firstCheck == 1)
+				trucksDatabase = findFirstTrucksDatabase(shopsDatabase, (int)(fiveMinutes.count*factor));
+			cout << "Time: " <<(int)(fiveMinutes.count*factor) << endl;
+			cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
+			while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
+
+				int X = 0;
+				int range = trucksDatabase.size();
+				vector<int> chosen;
+				vector<vector<double>> buforTrucksDatabase;
+
+
+				buforTrucksDatabase = trucksDatabase;
+				drawNextTrucksToMix(range, chosen);
+
+				mixTracks(buforTrucksDatabase, chosen, shopsDatabase);
+				selectBetterResult(trucksDatabase, buforTrucksDatabase);
+
+				/*cout.precision(16);
+				cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";*/
+
+				stop = high_resolution_clock::now();
 			}
+			//Agreagate 
+			vector<double> bufor;
+			bufor.push_back((double)instances);
+			bufor.push_back(factor);
+			bufor.push_back((double)trucksDatabase.size());
+			bufor.push_back(calculateSumServiceTime(trucksDatabase));
+			resultDatabase.push_back(bufor);
 		}
-
-		if (firstCheck == 1)
-			trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
-		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
-		while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
-
-			int X = 0;
-			int range = trucksDatabase.size();
-			vector<int> chosen;
-			vector<vector<double>> buforTrucksDatabase;
-
-
-			buforTrucksDatabase = trucksDatabase;
-			drawNextTrucksToMix(range, chosen);
-
-			mixTracks(buforTrucksDatabase, chosen, shopsDatabase);
-			selectBetterResult(trucksDatabase, buforTrucksDatabase);
-
-			/*cout.precision(16);
-			cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";*/
-
-			stop = high_resolution_clock::now();
-		}
-		//Agreagate 
-		vector<double> bufor;
-		bufor.push_back((double)instances);
-		bufor.push_back((double)trucksDatabase.size());
-		bufor.push_back(calculateSumServiceTime(trucksDatabase));
-		resultDatabase.push_back(bufor);
 
 	}
 	cout << "end" << endl;
