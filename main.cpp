@@ -508,7 +508,7 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 20; instances <= shopsData.size(); instances += 250) {
+	for (int instances = 20; instances <= shopsData.size(); instances += 20) {
 		auto start = high_resolution_clock::now();
 		auto stop = high_resolution_clock::now();
 		vector<vector<int>> shopsDatabase = shopsData; 
