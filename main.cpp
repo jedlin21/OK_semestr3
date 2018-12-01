@@ -508,10 +508,12 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 8; instances <= shopsData.size(); instances += 250) {
-		
-		vector<vector<int>> shopsDatabase = shopsData; /// Here add "take first instances objects"
-		cout << instances << endl;
+	for (int instances = 20; instances <= shopsData.size(); instances += 250) {
+		auto start = high_resolution_clock::now();
+		auto stop = high_resolution_clock::now();
+		vector<vector<int>> shopsDatabase = shopsData; 
+		shopsDatabase.resize(instances);
+		cout << instances << " " << shopsDatabase.size() << endl;
 		int firstCheck = 1;
 		double distanceDouble;
 		double wait;
