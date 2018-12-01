@@ -483,8 +483,8 @@ void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, ve
 		printTruck(newFirstTruck);
 		printTruck(newSecondTruck);
 		cout << endl;*/
-		cout.precision(16);
-		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
+		//cout.precision(16);
+		//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
 		/*printTruck(trucksDatabase[chosen[0]]);
 		printTruck(trucksDatabase[chosen[1]]);*/
 	}
@@ -495,8 +495,7 @@ int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	string fileName = "input.txt";
-	auto start = high_resolution_clock::now();
-	auto stop = high_resolution_clock::now();
+	
 	seconds fiveMinutes(5);
 	int howManySeondsForGRASP = 1;
 	vector<vector<int>> shopsData;
@@ -512,8 +511,11 @@ int main(int argc, char * argv[])
 
 		for (double factor = 0.2; factor <= 1; factor += 0.2)
 		{
-			vector<vector<int>> shopsDatabase = shopsData; /// Here add "take first instances objects"
-			cout << instances << endl;
+			auto start = high_resolution_clock::now();
+			auto stop = high_resolution_clock::now();
+			vector<vector<int>> shopsDatabase = shopsData; 
+			shopsDatabase.resize(instances);
+			cout << shopsDatabase.size() << endl;
 			int firstCheck = 1;
 			double distanceDouble;
 			double wait;
@@ -540,8 +542,8 @@ int main(int argc, char * argv[])
 			}
 
 			if (firstCheck == 1)
-				trucksDatabase = findFirstTrucksDatabase(shopsDatabase, (int)(fiveMinutes.count*factor));
-			cout << "Time: " <<(int)(fiveMinutes.count*factor) << endl;
+				trucksDatabase = findFirstTrucksDatabase(shopsDatabase, (int)(fiveMinutes.count()*factor));
+			cout << "Time: " <<(int)(fiveMinutes.count()*factor) << endl;
 			cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
 			while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
 
