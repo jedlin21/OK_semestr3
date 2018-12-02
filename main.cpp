@@ -490,7 +490,7 @@ int main(int argc, char * argv[])
 	srand(time(NULL));
 	string fileName = "input.txt";
 	
-	seconds fiveMinutes(5);
+	seconds fiveMinutes(300);
 	int howManySeondsForGRASP = 1;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
