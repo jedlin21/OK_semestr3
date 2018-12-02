@@ -329,16 +329,10 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	file.precision(26);
 	cout.precision(16);
 	file.open(fileName);
-	if (bestResult.size() == 0)
-		file << "-1" << "\n";
-	else
-	{
-		file << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
-		cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
-	}
+
 	for (int i = 0; i < bestResult.size(); i++)
 	{
-		for (int j = 4; j < bestResult[i].size(); j++) {
+		for (int j = 0; j < bestResult[i].size(); j++) {
 			file << bestResult[i][j] << " ";
 		}
 		file << "\n";
@@ -497,7 +491,7 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(5);
+	seconds fiveMinutes(300);
 	int howManySeondsForGRASP = 1;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
