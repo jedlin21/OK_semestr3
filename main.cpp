@@ -477,8 +477,8 @@ void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, ve
 		printTruck(newFirstTruck);
 		printTruck(newSecondTruck);
 		cout << endl;*/
-		cout.precision(16);
-		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
+			//cout.precision(16);
+			//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
 		/*printTruck(trucksDatabase[chosen[0]]);
 		printTruck(trucksDatabase[chosen[1]]);*/
 	}
@@ -489,10 +489,9 @@ int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	string fileName = "input.txt";
-	auto start = high_resolution_clock::now();
-	auto stop = high_resolution_clock::now();
+	
 	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 1;
+	int howManySeondsForGRASP = 120;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -507,7 +506,7 @@ int main(int argc, char * argv[])
 		auto stop = high_resolution_clock::now();
 		vector<vector<int>> shopsDatabase = shopsData; 
 		shopsDatabase.resize(instances);
-		cout << instances << " " << shopsDatabase.size() << endl;
+		cout << "Instances: " << shopsDatabase.size()<< " / " << shopsData.size() << endl;
 		int firstCheck = 1;
 		double distanceDouble;
 		double wait;
@@ -534,7 +533,7 @@ int main(int argc, char * argv[])
 
 		if (firstCheck == 1)
 			trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
-		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
+		//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
 		while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
 
 			int X = 0;
@@ -563,9 +562,9 @@ int main(int argc, char * argv[])
 
 	}
 	cout << "end" << endl;
-	saveToFile(resultDatabase, "file.txt");
+	saveToFile(resultDatabase, "minimalizeSumTimeData.txt");
 
-	printTrucks(resultDatabase);
+	//printTrucks(resultDatabase);
 	system("pause");
 	return 0;
 }
