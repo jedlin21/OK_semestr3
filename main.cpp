@@ -391,6 +391,7 @@ vector<vector<double>> findFirstTrucksDatabase(vector<vector<int>> shopsDatabase
 		}
 
 		trucksDatabase.back()[3] += calculateDistanceToBase(trucksDatabase.back(), shopsDatabase[0]); //update last truck
+		cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
 		selectBetterResult(bestResult, trucksDatabase);
 		//Clear before next iteration
 		ResetVisitedFlag(shopsDatabase);
@@ -497,8 +498,8 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(100);
-	int howManySeondsForGRASP = 20;
+	seconds fiveMinutes(300);
+	int howManySeondsForGRASP = 120;
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -565,7 +566,7 @@ int main(int argc, char * argv[])
 	cout << "end" << endl;
 	saveToFile(trucksDatabase, "file.txt");
 
-	//printTrucks(trucksDatabase);
+	printTrucks(trucksDatabase);
 	system("pause");
 	return 0;
 }
