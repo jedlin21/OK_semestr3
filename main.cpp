@@ -13,7 +13,7 @@ using namespace std::chrono;
 
 static int capacity;
 
-void writeData(vector<vector<int>> & shopDatabase, string fileName) // to improve - fail if data is damaged 
+void writeData(vector<vector<int>> & shopDatabase, string fileName) 
 {
 	string line, newword; //temporary, only to help read proper data
 	vector<int> shop;
@@ -181,7 +181,7 @@ void updateTheTrackDatabase(vector<double> & truck, vector<vector<int>> & shopsD
 	truck[3] = truck[3] + shopsDatabase[theBestFitIndex][6] + distance;  //time: add distance and service time
 	truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
 	truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
-	truck.push_back(theBestFitIndex);
+	truck.push_back(theBestFitIndex); //add chosen client to the truck vector
 }
 
 bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance, int & indexWaiting, double & distanceWaiting)
@@ -269,9 +269,10 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 	else if (mode == "theShortestTimeFromStartToEnd")
 	{
 		int maxTime = 0;
-		for (int i = 0; i < trucksDatabase.size(); i++) {
+		for (int i = 0; i < trucksDatabase.size(); i++) { //po co to 
 			if (maxTime > trucksDatabase[i][3])
 				maxTime = trucksDatabase[i][3];
+
 		}
 		if (maxTime < bestResult.back()[0]) {
 			bestResult = trucksDatabase;
@@ -296,11 +297,11 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 		cout << "Wrong mode exception" << endl;
 }
 
-double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
+double calculateSumServiceTime(vector<vector<double>> trucksDatabase
 {
 	double serviceTime = 0;
 	for (int i = 0; i < trucksDatabase.size(); i++)
-		serviceTime += trucksDatabase[i][3];
+		serviceTime += trucksDatabase[i][3]; // add service times of all trucks
 	return serviceTime;
 }
 
