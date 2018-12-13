@@ -437,19 +437,32 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, vector<vector<int>> shopsDatabase)
 {
 	int firstSlice;
-	while ((firstSlice = rand() % (trucksDatabase[chosen[0]].size()-1)) < 4)
+	
+	while ((firstSlice = rand() % trucksDatabase[chosen[0]].size()) < 4)
 		continue;
 	int thirdSlice;
-	while ((thirdSlice = rand() % trucksDatabase[chosen[0]].size()) < 4 || (thirdSlice<= firstSlice))
+	while ((thirdSlice = rand() % trucksDatabase[chosen[0]].size()) < 4)
 		continue;
 	int secondSlice;
-	while ((secondSlice = rand() % (trucksDatabase[chosen[1]].size()-1)) < 4)
+	while ((secondSlice = rand() % trucksDatabase[chosen[1]].size()) < 4)
 		continue;
 	int fourthSlice;
-	while ((fourthSlice = rand() % trucksDatabase[chosen[1]].size()) < 4 || (fourthSlice <= secondSlice))
+	while ((fourthSlice = rand() % trucksDatabase[chosen[1]].size()) < 4 )
 		continue;
-	
 
+	int temp;
+	if (firstSlice > thirdSlice)
+	{
+		temp = firstSlice;
+		firstSlice = thirdSlice;
+		thirdSlice = temp;
+	}
+	if (secondSlice > fourthSlice)
+	{
+		temp = secondSlice;
+		secondSlice = fourthSlice;
+		fourthSlice = temp;
+	}
 	vector<double>::const_iterator first = trucksDatabase[chosen[0]].begin();
 	vector<double>::const_iterator last = trucksDatabase[chosen[0]].begin() + firstSlice;
 
@@ -510,8 +523,8 @@ int main(int argc, char * argv[])
 	srand(time(NULL));
 	string fileName = "input.txt";
 	
-	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 120;
+	seconds fiveMinutes(60);
+	int howManySeondsForGRASP = 20;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -521,7 +534,7 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 20; instances <= shopsData.size(); instances += 20) {
+	for (int instances = 50; instances <= shopsData.size(); instances += 50) {
 		auto start = high_resolution_clock::now();
 		auto stop = high_resolution_clock::now();
 		vector<vector<int>> shopsDatabase = shopsData; 
