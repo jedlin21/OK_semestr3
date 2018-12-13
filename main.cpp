@@ -441,6 +441,7 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 }
 
 
+
 void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, vector<vector<int>> shopsDatabase)
 {
 	int firstSlice;
