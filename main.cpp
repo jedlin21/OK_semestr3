@@ -13,7 +13,7 @@ using namespace std::chrono;
 
 static int capacity;
 
-void writeData(vector<vector<int>> & shopDatabase, string fileName) // to improve - fail if data is damaged 
+void writeData(vector<vector<int>> & shopDatabase, string fileName)
 {
 	string line, newword; //temporary, only to help read proper data
 	vector<int> shop;
@@ -181,7 +181,7 @@ void updateTheTrackDatabase(vector<double> & truck, vector<vector<int>> & shopsD
 	truck[3] = truck[3] + shopsDatabase[theBestFitIndex][6] + distance;  //time: add distance and service time
 	truck[1] = shopsDatabase[theBestFitIndex][1];  // xCoord
 	truck[2] = shopsDatabase[theBestFitIndex][2]; // yCoord
-	truck.push_back(theBestFitIndex);
+	truck.push_back(theBestFitIndex); //add chosen client to the truck vector
 }
 
 bool makeDistanceVector(vector<vector<double>> & trucks, vector<vector<int>> & shopDatabase, vector<vector<double>> & distance, int & indexWaiting, double & distanceWaiting)
@@ -269,9 +269,10 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 	else if (mode == "theShortestTimeFromStartToEnd")
 	{
 		int maxTime = 0;
-		for (int i = 0; i < trucksDatabase.size(); i++) {
+		for (int i = 0; i < trucksDatabase.size(); i++) { //po co to 
 			if (maxTime > trucksDatabase[i][3])
 				maxTime = trucksDatabase[i][3];
+
 		}
 		if (maxTime < bestResult.back()[0]) {
 			bestResult = trucksDatabase;
@@ -300,7 +301,7 @@ double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 {
 	double serviceTime = 0;
 	for (int i = 0; i < trucksDatabase.size(); i++)
-		serviceTime += trucksDatabase[i][3];
+		serviceTime += trucksDatabase[i][3]; // add service times of all trucks
 	return serviceTime;
 }
 
@@ -309,7 +310,6 @@ int drawNextClient(int rangeDistance)
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
-
 
 void drawNextTrucksToMix(int range, vector<int> & chosen)
 {
@@ -330,10 +330,16 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	file.precision(26);
 	cout.precision(16);
 	file.open(fileName);
-
+	if (bestResult.size() == 0)
+		file << "-1" << "\n";
+	else
+	{
+		file << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
+		cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
+	}
 	for (int i = 0; i < bestResult.size(); i++)
 	{
-		for (int j = 0; j < bestResult[i].size(); j++) {
+		for (int j = 4; j < bestResult[i].size(); j++) {
 			file << bestResult[i][j] << " ";
 		}
 		file << "\n";
@@ -522,7 +528,8 @@ int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	string fileName = "input.txt";
-
+	auto start = high_resolution_clock::now();
+	auto stop = high_resolution_clock::now();
 	seconds fiveMinutes(60);
 	int howManySeondsForGRASP = 20;
 	vector<vector<int>> shopsDatabase;
@@ -532,11 +539,6 @@ int main(int argc, char * argv[])
 	writeData(shopsDatabase, fileName);
 	addFlag(shopsDatabase);
 
-	//Test
-	vector<vector<double>> resultDatabase;
-
-	auto start = high_resolution_clock::now();
-	auto stop = high_resolution_clock::now();
 	int firstCheck = 1;
 	double distanceDouble;
 	double wait;
@@ -563,8 +565,18 @@ int main(int argc, char * argv[])
 
 	if (firstCheck == 1)
 		trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
-	//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
+	cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
 	while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
+
+		//I have trucksDatabase here. What should I do next?
+		//hmmm
+		//You should take 2 trucks and mix them.
+		//Then you check if database is correct?
+		//when it is you check if that result is beter ... or you collect a few result and after X(tune-upped) try you chose which are better.
+		//and when it isn't correct, then randomly chose next 
+		//capacity
+		//okno czasowe przy zmianie
+		//
 
 		int X = 0;
 		int range = trucksDatabase.size();
@@ -583,11 +595,10 @@ int main(int argc, char * argv[])
 
 		stop = high_resolution_clock::now();
 	}
-
 	cout << "end" << endl;
-	saveToFile(trucksDatabase, "check.txt");
+	saveToFile(trucksDatabase, "file.txt");
 
-	//printTrucks(resultDatabase);
+	printTrucks(trucksDatabase);
 	system("pause");
 	return 0;
 }
