@@ -260,7 +260,7 @@ double calculateDistance(int firstX, int firstY, vector<int> second)
 	return sqrt(pow((secondX - firstX), 2) + pow((secondY - firstY), 2));
 }
 
-void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode = "number") {
+void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode = "sumTime") {
 	// Compare previous best result with actual trucksDatabase and choose better result.
 	if (bestResult.empty())
 	{
@@ -309,6 +309,7 @@ int drawNextClient(int rangeDistance)
 	int chosen = rand() % rangeDistance;
 	return chosen;
 }
+
 
 void drawNextTrucksToMix(int range, vector<int> & chosen)
 {
@@ -432,32 +433,51 @@ bool truckManage(vector<double> & truck, vector<vector<int>> shopsDatabase)
 	return true;
 }
 
-
+//to change
 void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, vector<vector<int>> shopsDatabase)
 {
 	int firstSlice;
-	while ((firstSlice = rand() % trucksDatabase[chosen[0]].size()) < 4)
+	while ((firstSlice = rand() % (trucksDatabase[chosen[0]].size()-1)) < 4)
+		continue;
+	int thirdSlice;
+	while ((thirdSlice = rand() % trucksDatabase[chosen[0]].size()) < 4 || (thirdSlice<= firstSlice))
 		continue;
 	int secondSlice;
-	while ((secondSlice = rand() % trucksDatabase[chosen[1]].size()) < 4)
+	while ((secondSlice = rand() % (trucksDatabase[chosen[1]].size()-1)) < 4)
 		continue;
+	int fourthSlice;
+	while ((fourthSlice = rand() % trucksDatabase[chosen[1]].size()) < 4 || (fourthSlice <= secondSlice))
+		continue;
+	
 
 	vector<double>::const_iterator first = trucksDatabase[chosen[0]].begin();
 	vector<double>::const_iterator last = trucksDatabase[chosen[0]].begin() + firstSlice;
+
 	vector<double> newFirstTruck(first, last); //only left part
+
 	first = trucksDatabase[chosen[1]].begin() + secondSlice;
-	last = trucksDatabase[chosen[1]].end();
+	last = trucksDatabase[chosen[1]].begin() + fourthSlice;
+	newFirstTruck.insert(newFirstTruck.end(), first, last);
+
+	first = trucksDatabase[chosen[0]].begin() + thirdSlice;
+	last = trucksDatabase[chosen[0]].end();
+
 	newFirstTruck.insert(newFirstTruck.end(), first, last);
 
 	first = trucksDatabase[chosen[1]].begin();
 	last = trucksDatabase[chosen[1]].begin() + secondSlice;
 	vector<double> newSecondTruck(first, last); //only left part
 	first = trucksDatabase[chosen[0]].begin() + firstSlice;
-	last = trucksDatabase[chosen[0]].end();
+	last = trucksDatabase[chosen[0]].begin() + thirdSlice;
 	newSecondTruck.insert(newSecondTruck.end(), first, last);
 
+	first = trucksDatabase[chosen[1]].begin() + fourthSlice;
+	last = trucksDatabase[chosen[1]].end();
+	newSecondTruck.insert(newSecondTruck.end(), first, last);
+
+
 	/*cout << "truck" << endl;
-	cout << firstSlice << " " << secondSlice << endl;
+	cout << firstSlice << " " << thirdSlice << " "<<secondSlice <<" "<<fourthSlice<< endl;
 	printTruck(trucksDatabase[chosen[0]]);
 	printTruck(trucksDatabase[chosen[1]]);
 	printTruck(newFirstTruck);
