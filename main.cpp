@@ -489,13 +489,13 @@ void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, ve
 	newSecondTruck.insert(newSecondTruck.end(), first, last);
 
 
-	/*cout << "truck" << endl;
+	cout << "truck" << endl;
 	cout << firstSlice << " " << thirdSlice << " "<<secondSlice <<" "<<fourthSlice<< endl;
 	printTruck(trucksDatabase[chosen[0]]);
 	printTruck(trucksDatabase[chosen[1]]);
 	printTruck(newFirstTruck);
 	printTruck(newSecondTruck);
-	cout << endl ;*/
+	cout << endl ;
 
 
 	if (truckManage(newFirstTruck, shopsDatabase) && truckManage(newSecondTruck, shopsDatabase))
