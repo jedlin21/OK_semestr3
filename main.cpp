@@ -297,7 +297,7 @@ void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<doubl
 		cout << "Wrong mode exception" << endl;
 }
 
-double calculateSumServiceTime(vector<vector<double>> trucksDatabase
+double calculateSumServiceTime(vector<vector<double>> trucksDatabase)
 {
 	double serviceTime = 0;
 	for (int i = 0; i < trucksDatabase.size(); i++)
@@ -499,8 +499,8 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	auto start = high_resolution_clock::now();
 	auto stop = high_resolution_clock::now();
-	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 120;
+	seconds fiveMinutes(60);
+	int howManySeondsForGRASP =20;
 	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
