@@ -524,7 +524,7 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	
 	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 120;
+	int howManySeondsForGRASP = 60;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -534,7 +534,7 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 20; instances <= shopsData.size(); instances += 20) {
+	for (int instances = 100; instances <= shopsData.size(); instances += 100) {
 		auto start = high_resolution_clock::now();
 		auto stop = high_resolution_clock::now();
 		vector<vector<int>> shopsDatabase = shopsData; 
