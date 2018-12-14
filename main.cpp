@@ -491,7 +491,7 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	
 	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 270;
+	int howManySeondsForGRASP = 300;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
