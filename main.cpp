@@ -260,7 +260,7 @@ double calculateDistance(int firstX, int firstY, vector<int> second)
 	return sqrt(pow((secondX - firstX), 2) + pow((secondY - firstY), 2));
 }
 
-void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode = "number") {
+void selectBetterResult(vector<vector<double>> & bestResult, vector<vector<double>> trucksDatabase, string mode = "sumTime") {
 	// Compare previous best result with actual trucksDatabase and choose better result.
 	if (bestResult.empty())
 	{
@@ -491,7 +491,7 @@ int main(int argc, char * argv[])
 	string fileName = "input.txt";
 	
 	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 120;
+	int howManySeondsForGRASP = 270;
 	vector<vector<int>> shopsData;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
@@ -501,7 +501,7 @@ int main(int argc, char * argv[])
 
 	//Test
 	vector<vector<double>> resultDatabase;
-	for (int instances = 20; instances <= shopsData.size(); instances += 20) {
+	for (int instances = 50; instances <= shopsData.size(); instances += 50) {
 		auto start = high_resolution_clock::now();
 		auto stop = high_resolution_clock::now();
 		vector<vector<int>> shopsDatabase = shopsData; 
