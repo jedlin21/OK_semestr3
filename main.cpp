@@ -6,7 +6,7 @@
 #include "functions.h"
 #include <chrono>
 #include <math.h>
-#include <time.h> 
+#include <time.h>
 
 using namespace std;
 using namespace std::chrono;
@@ -329,10 +329,16 @@ void saveToFile(vector<vector<double>> bestResult, string fileName)
 	file.precision(26);
 	cout.precision(16);
 	file.open(fileName);
-
+	if (bestResult.size() == 0)
+		file << "-1" << "\n";
+	else
+	{
+		file << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
+		//cout << bestResult.size() << " " << calculateSumServiceTime(bestResult) << "\n";
+	}
 	for (int i = 0; i < bestResult.size(); i++)
 	{
-		for (int j = 0; j < bestResult[i].size(); j++) {
+		for (int j = 4; j < bestResult[i].size(); j++) {
 			file << bestResult[i][j] << " ";
 		}
 		file << "\n";
@@ -358,7 +364,7 @@ vector<vector<double>> findFirstTrucksDatabase(vector<vector<int>> shopsDatabase
 
 		while (makeDistanceVector(trucksDatabase, shopsDatabase, distance, indexWaiting, timewaiting))
 		{   //While there are no more 0 in last column.
-			 //Current track == trucksDatabase.back()
+			//Current track == trucksDatabase.back()
 			if (distance.size() > 5)
 			{
 				QuickSort(distance, 0, distance.size() - 1);
@@ -477,8 +483,8 @@ void mixTracks(vector<vector<double>> & trucksDatabase, vector<int> & chosen, ve
 		printTruck(newFirstTruck);
 		printTruck(newSecondTruck);
 		cout << endl;*/
-			//cout.precision(16);
-			//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
+		cout.precision(16);
+		//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << endl;
 		/*printTruck(trucksDatabase[chosen[0]]);
 		printTruck(trucksDatabase[chosen[1]]);*/
 	}
@@ -489,52 +495,62 @@ int main(int argc, char * argv[])
 {
 	srand(time(NULL));
 	string fileName = "input.txt";
-	
+	auto start = high_resolution_clock::now();
+	auto stop = high_resolution_clock::now();
 	seconds fiveMinutes(300);
-	int howManySeondsForGRASP = 300;
-	vector<vector<int>> shopsData;
+	int howManySeondsForGRASP = 270;
+	vector<vector<int>> shopsDatabase;
 	vector<vector<double>> bestResult;
 	vector<vector<double>> trucksDatabase;
 
-	writeData(shopsData, fileName);
-	addFlag(shopsData);
+	writeData(shopsDatabase, fileName);
+	addFlag(shopsDatabase);
 
-	//Test
-	vector<vector<double>> resultDatabase;
-	for (int instances = 50; instances <= shopsData.size(); instances += 50) {
-		auto start = high_resolution_clock::now();
-		auto stop = high_resolution_clock::now();
-		vector<vector<int>> shopsDatabase = shopsData; 
-		shopsDatabase.resize(instances);
-		cout << "Instances: " << shopsDatabase.size()<< " / " << shopsData.size() << endl;
-		int firstCheck = 1;
-		double distanceDouble;
-		double wait;
-		for (int i = 1; i < shopsDatabase.size(); i++)
+	int firstCheck = 1;
+	double distanceDouble;
+	double wait;
+	for (int i = 1; i < shopsDatabase.size(); i++)
+	{
+		wait = 0;
+		if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
 		{
-			wait = 0;
-			if ((shopsDatabase[0][5] < shopsDatabase[i][4]) || (shopsDatabase[0][4] > shopsDatabase[i][5]))
-			{
-				firstCheck = 0;
-				break;
-			}
-			distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
-
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
-			{
-				wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
-			}
-			if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
-			{
-				firstCheck = 0;
-				break;
-			}
+			firstCheck = 0;
+			break;
 		}
+		distanceDouble = sqrt(pow((shopsDatabase[0][1] - shopsDatabase[i][1]), 2) + pow((shopsDatabase[0][2] - shopsDatabase[i][2]), 2));
 
-		if (firstCheck == 1)
-			trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
-		//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
-		while (trucksDatabase.size() > 0 && (duration_cast<seconds>(stop - start) < fiveMinutes)) {
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble < shopsDatabase[i][4])
+		{
+			wait = shopsDatabase[i][4] - (shopsDatabase[0][4] + shopsDatabase[0][6] + distanceDouble);
+		}
+		if (shopsDatabase[0][4] + shopsDatabase[0][6] + 2 * distanceDouble + shopsDatabase[i][6] + wait >= shopsDatabase[0][5])
+		{
+			firstCheck = 0;
+			break;
+		}
+	}
+
+	if (firstCheck == 1)
+		trucksDatabase = findFirstTrucksDatabase(shopsDatabase, howManySeondsForGRASP);
+	//printTrucks(trucksDatabase);
+	/*if (trucksDatabase.size() == 1)
+	{
+		cout << "mam tylko jedna ciezarowke" << endl;
+	}*/
+	//cout << trucksDatabase.size() << " " << calculateSumServiceTime(trucksDatabase) << "\n";
+	if (trucksDatabase.size() > 1)
+	{
+		while (duration_cast<seconds>(stop - start) < fiveMinutes) {
+
+			//I have trucksDatabase here. What should I do next?
+			//hmmm
+			//You should take 2 trucks and mix them.
+			//Then you check if database is correct?
+			//when it is you check if that result is beter ... or you collect a few result and after X(tune-upped) try you chose which are better.
+			//and when it isn't correct, then randomly chose next
+			//capacity
+			//okno czasowe przy zmianie
+			//
 
 			int X = 0;
 			int range = trucksDatabase.size();
@@ -553,18 +569,16 @@ int main(int argc, char * argv[])
 
 			stop = high_resolution_clock::now();
 		}
-		//Agreagate 
-		vector<double> bufor;
-		bufor.push_back((double)instances);
-		bufor.push_back((double)trucksDatabase.size());
-		bufor.push_back(calculateSumServiceTime(trucksDatabase));
-		resultDatabase.push_back(bufor);
-
 	}
-	cout << "end" << endl;
-	saveToFile(resultDatabase, "minimalizeSumTimeData.txt");
+	/*else
+	{
 
-	//printTrucks(resultDatabase);
+	}*/
+	
+	//cout << "end" << endl;
+	saveToFile(trucksDatabase, "file.txt");
+
+	//printTrucks(trucksDatabase);
 	system("pause");
 	return 0;
 }
